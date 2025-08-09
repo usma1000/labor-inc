@@ -10,7 +10,7 @@ export default function Lever() {
   // Track dimensions
   const TRACK_HEIGHT = 160;
   const HANDLE_RADIUS = 30;
-  const TRACK_WIDTH = 12;
+  const TRACK_WIDTH = 30;
 
   return (
     <div
@@ -32,18 +32,15 @@ export default function Lever() {
           dragConstraints={{
             top: 0,
             bottom: TRACK_HEIGHT - HANDLE_RADIUS,
-            left: -HANDLE_RADIUS / 2, // Center the handle
           }}
           dragElastic={0}
-          dragTransition={{ bounceStiffness: 500, bounceDamping: 15 }}
+          dragMomentum={false}
           whileDrag={{ cursor: "grabbing" }}
           style={{
             position: "absolute",
             width: HANDLE_RADIUS,
             height: HANDLE_RADIUS,
             borderRadius: "50%",
-            left: "50%",
-            transform: "translateX(-50%)",
             boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
             border: "2px solid #535149",
             background: "var(--color-screen)",
