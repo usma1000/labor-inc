@@ -1,35 +1,16 @@
 import { useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { useGameStore } from "../store";
+import * as motion from "motion/react-client";
 
 export default function Lever() {
-  const [isDragging, setIsDragging] = useState(false);
-  const [y, setY] = useState(0);
+  const leverDragSpeed = useGameStore((state) => state.leverDragSpeed);
+  const leverResetSpeed = useGameStore((state) => state.leverResetSpeed);
   const trackRef = useRef<HTMLDivElement>(null);
-  const handleRef = useRef<HTMLDivElement>(null);
 
   // Track dimensions
   const TRACK_HEIGHT = 160;
-  const HANDLE_RADIUS = 20;
+  const HANDLE_RADIUS = 30;
   const TRACK_WIDTH = 12;
-
-  // Mouse/touch drag handlers
-  const startDrag = (e: React.PointerEvent) => {
-    setIsDragging(true);
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  };
-
-  const stopDrag = (e: React.PointerEvent) => {
-    setIsDragging(false);
-    (e.target as HTMLElement).releasePointerCapture(e.pointerId);
-  };
-
-  const onDrag = (e: React.PointerEvent) => {
-    if (!isDragging || !trackRef.current) return;
-    const rect = trackRef.current.getBoundingClientRect();
-    let newY = e.clientY - rect.top - HANDLE_RADIUS;
-    newY = Math.max(0, Math.min(newY, TRACK_HEIGHT - HANDLE_RADIUS * 2));
-    setY(newY);
-  };
 
   return (
     <div
@@ -42,23 +23,32 @@ export default function Lever() {
         style={{
           width: TRACK_WIDTH,
           height: TRACK_HEIGHT,
-          borderRadius: TRACK_WIDTH / 2,
+          borderRadius: TRACK_WIDTH,
           boxShadow: "inset 0 0 10px rgba(30, 30, 30, 0.7)",
         }}
       >
         <motion.div
-          ref={handleRef}
-          className="absolute left-1/2 -translate-x-1/2 cursor-pointer transition-colors bg-screen rounded-full shadow-lg shadow-gray-950 border-4 border-stone-400"
+          drag="y"
+          dragConstraints={{
+            top: 0,
+            bottom: TRACK_HEIGHT - HANDLE_RADIUS,
+            left: -HANDLE_RADIUS / 2, // Center the handle
+          }}
+          dragElastic={0}
+          dragTransition={{ bounceStiffness: 500, bounceDamping: 15 }}
+          whileDrag={{ cursor: "grabbing" }}
           style={{
-            top: y,
-            width: HANDLE_RADIUS * 2,
-            height: HANDLE_RADIUS * 2,
+            position: "absolute",
+            width: HANDLE_RADIUS,
+            height: HANDLE_RADIUS,
+            borderRadius: "50%",
+            left: "50%",
+            transform: "translateX(-50%)",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+            border: "2px solid #535149",
+            background: "var(--color-screen)",
             zIndex: 2,
           }}
-          onPointerDown={startDrag}
-          onPointerUp={stopDrag}
-          onPointerMove={onDrag}
-          layout
         />
       </div>
     </div>

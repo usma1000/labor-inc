@@ -37,8 +37,8 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   // --- Button Upgrade State ---
   buttonWageAmount: 1,
-  buttonCooldownTime: 5000,
-  buttonHoldTime: 3000,
+  buttonCooldownTime: 1000,
+  buttonHoldTime: 1000,
 
   // --- Lever Upgrade State ---
   leverUnlocked: false,
