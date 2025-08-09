@@ -45,14 +45,7 @@ export const ObjetLogo: React.FC<ObjetLogoProps> = ({
       />
 
       {/* subtle inner ring */}
-      <circle
-        cx="100"
-        cy="100"
-        r="46"
-        fill="none"
-        stroke={accentColor}
-        strokeWidth="8"
-      />
+      <circle cx="100" cy="100" r="46" fill={accentColor} />
     </svg>
   );
 };

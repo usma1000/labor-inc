@@ -4,9 +4,9 @@ export const buttonUpgrades: UpgradeConfig[] = [
   {
     tool: "button",
     id: "yield",
-    name: "Output Optimization",
+    name: "Output Optimization Initiative",
     description:
-      "Output Optimization Initiative — every task you complete now produces more measurable productivity units.",
+      "Every task you complete now produces more measurable productivity units.",
     baseCost: 10,
     costMultiplier: 1.6,
     effectBase: 1,
@@ -16,9 +16,8 @@ export const buttonUpgrades: UpgradeConfig[] = [
   {
     tool: "button",
     id: "holdTime",
-    name: "Ergonomic Interface",
-    description:
-      "Ergonomic Interface Upgrade — your finger fatigue is of great concern to Objet Systems.",
+    name: "Ergonomic Interface Upgrade",
+    description: "Your finger fatigue is of great concern to Objet Systems.",
     baseCost: 15,
     costMultiplier: 1.8,
     effectBase: 5,
@@ -29,9 +28,9 @@ export const buttonUpgrades: UpgradeConfig[] = [
   {
     tool: "button",
     id: "cooldown",
-    name: "Cycle Time Reduction",
+    name: "Cycle Time Reduction Protocol",
     description:
-      "Cycle Time Reduction Protocol — increase operational cadence without overheating (monitored for your safety).",
+      "Increase operational cadence without overheating (monitored for your safety).",
     baseCost: 20,
     costMultiplier: 1.8,
     effectBase: 3,
@@ -42,9 +41,8 @@ export const buttonUpgrades: UpgradeConfig[] = [
   {
     tool: "button",
     id: "autoPress",
-    name: "Auto-Press Module",
-    description:
-      "Integrated Auto-Press Module — enables perpetual contribution without human oversight.",
+    name: "Integrated Auto-Press Module",
+    description: "Enables perpetual contribution without human oversight.",
     baseCost: 500,
     costMultiplier: 1, // fixed cost
     effectBase: 0, // irrelevant here

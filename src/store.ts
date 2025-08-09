@@ -37,6 +37,10 @@ function groupUpgradesByTool(
   return grouped;
 }
 
+// Dev mode configuration
+const DEV_MODE = import.meta.env.DEV; // This will be true in development, false in production
+const INITIAL_DEV_MERITS = 500; // Adjust this value for testing
+
 export const useGameStore = create<GameState>((set, get) => {
   // Audio for message notification
   let messageAudio: HTMLAudioElement | null = null;
@@ -147,13 +151,14 @@ export const useGameStore = create<GameState>((set, get) => {
       });
     },
     // --- Core State ---
-    wage: 0,
+    wage: DEV_MODE ? INITIAL_DEV_MERITS : 0,
     messages: [
       "Welcome, Associate. You are now an essential part of Objet Systems, where every spark of Desire is refined into measurable Productivity™.",
       "Your first Task awaits. Remember: your output ensures your well-being, and your well-being ensures output. (Your work is being monitored for your safety.)",
+      ...(DEV_MODE ? ["[DEV MODE ACTIVE]"] : []),
     ],
     lastWageEarned: null,
-    upgradesUnlocked: false,
+    upgradesUnlocked: DEV_MODE,
     milestonesReached: new Set(),
 
     // --- Button Upgrade State ---

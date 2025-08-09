@@ -64,12 +64,12 @@ export default function Footer() {
           <div
             style={{
               position: "fixed",
-              right: "20px",
+              left: "20px",
               bottom: "80px",
               maxHeight: "60vh",
               overflowY: "auto",
             }}
-            className="panel"
+            className="panel z-20"
           >
             <h2>Available Upgrades (Merits: {wage})</h2>
             {Object.values(buttonUpgrades).map(renderUpgrade)}
