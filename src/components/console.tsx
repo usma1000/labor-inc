@@ -75,9 +75,7 @@ export default function Console(props: ConsoleProps) {
   // In recessed mode, we only render the middle and inner layers
   if (recessed) {
     return (
-      <div className={`bg-beige rounded-xl ${padding}`}>
-        {renderMiddleLayer("p-1")}
-      </div>
+      <div className={`bg-beige rounded-xl`}>{renderMiddleLayer("p-1")}</div>
     );
   }
 
