@@ -10,18 +10,18 @@ export default function App() {
   return (
     <div className="space-y-6 p-4 w-full">
       <div className="flex justify-center">
-        <Console recessed height="auto" minWidth="200px">
-          <p>Wage: ${wage.toFixed(2)}</p>
-        </Console>
+        <div className="panel">
+          <Console recessed height="auto" minWidth="200px">
+            <p>Wage: ${wage.toFixed(2)}</p>
+          </Console>
+        </div>
 
-        {upgradesUnlocked && (
-          <button className="ml-4 px-3 py-1 text-white rounded bg-screen">
-            Upgrade
-          </button>
-        )}
+        {upgradesUnlocked && <button className="btn ml-2">Upgrade</button>}
       </div>
       <div className="flex justify-center">
-        <Button />
+        <div className="panel">
+          <Button />
+        </div>
       </div>
       <Console>
         {messages.map((msg, i) => (

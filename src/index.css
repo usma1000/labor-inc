@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  --color-beige-dark: #bbbab9;
   --color-beige: #c2c0bd;
   --color-screen: #dfdbd2;
   --color-ink: #373633;
@@ -9,5 +10,19 @@
 }
 
 #root {
-  @apply bg-beige text-ink min-h-screen flex items-center justify-center;
+  @apply bg-beige-dark text-ink min-h-screen flex items-center justify-center;
+}
+
+.btn {
+  @apply bg-beige text-ink rounded-md px-5 py-2 font-mono font-semibold shadow-sm shadow-ink transition-all duration-150
+    hover:bg-screen hover:shadow-[0_2px_0_0_rgba(134,131,123,0.18),0_1.5px_8px_0_rgba(83,81,73,0.22)] active:translate-y-0.5 active:shadow-[0_1.5px_0_0_rgba(134,131,123,0.12),0_0.5px_4px_0_rgba(83,81,73,0.18)];
+  background: linear-gradient(
+    to bottom,
+    var(--color-screen) 0%,
+    var(--color-beige) 100%
+  );
+}
+
+.panel {
+  @apply bg-beige text-ink rounded-lg shadow-sm shadow-darkstone p-6 border-t-1 border-screen;
 }

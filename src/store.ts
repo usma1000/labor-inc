@@ -69,7 +69,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       );
     });
 
-    triggerMilestone("wage_5", wage >= 5, () => {
+    triggerMilestone("wage_5", wage >= 2, () => {
       logMessage(
         "Upgrades are now available for purchase. Use your own wage to buy them."
       );
