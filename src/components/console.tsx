@@ -72,7 +72,7 @@ export default function Console(props: ConsoleProps) {
   // Full console mode with all layers
   return (
     <div
-      className="bg-beige text-ink p-1 rounded-2xl font-mono m-4 relative"
+      className="bg-beige text-ink p-1 rounded-2xl font-mono m-2 relative"
       style={{
         background:
           "linear-gradient(to bottom, var(--color-screen) 0%, var(--color-screen) 4px, var(--color-stone) 12px, var(--color-stone) calc(100% - 12px), var(--color-darkstone) calc(100% - 4px), var(--color-darkstone) 100%)",

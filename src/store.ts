@@ -1,47 +1,50 @@
 import { create } from "zustand";
 
-interface GameState {
+type GameState = {
   wage: number;
-  failures: number;
-  successChance: number;
-  sliderSpeedLevel: number;
-  maxSliderSpeed: number;
-  resetDuration: number;
-  log: string[];
-  increaseWage: (amount: number) => void;
-  addFailure: () => void;
-  reduceFailure: () => void;
-  upgradeSliderSpeed: () => void;
-  addLogMessage: (msg: string) => void;
-}
 
-// Speed constants
-const BASE_SLIDER_SPEED = 0.1; // pixels per ms
-const SPEED_INCREMENT = 0.05;
-const BASE_RESET_DURATION = 2.0; // seconds
+  // Button upgrades
+  buttonWageAmount: number;
+  buttonCooldownTime: number;
+  buttonHoldTime: number;
 
-export const useGameStore = create<GameState>((set) => ({
+  messages: string[];
+  upgradesUnlocked: boolean;
+  addWage: (amount: number) => void;
+  logMessage: (msg: string) => void;
+  checkProgression: () => void;
+};
+
+export const useGameStore = create<GameState>((set, get) => ({
   wage: 0,
-  failures: 0,
-  successChance: 0.8,
-  sliderSpeedLevel: 1,
-  maxSliderSpeed: BASE_SLIDER_SPEED,
-  resetDuration: BASE_RESET_DURATION,
-  log: [
+  messages: [
     "Welcome to your new job.",
     "Your first task: hold the button to start working.",
   ],
-  increaseWage: (amount) => set((state) => ({ wage: state.wage + amount })),
-  addFailure: () => set((state) => ({ failures: state.failures + 1 })),
-  reduceFailure: () =>
-    set((state) => ({
-      failures: state.failures > 0 ? state.failures - 1 : 0,
-    })),
-  upgradeSliderSpeed: () =>
-    set((state) => ({
-      sliderSpeedLevel: state.sliderSpeedLevel + 1,
-      maxSliderSpeed:
-        BASE_SLIDER_SPEED + state.sliderSpeedLevel * SPEED_INCREMENT,
-    })),
-  addLogMessage: (msg) => set((state) => ({ log: [...state.log, msg] })),
+  upgradesUnlocked: false,
+  buttonWageAmount: 1,
+  buttonCooldownTime: 5000,
+  buttonHoldTime: 1000,
+
+  addWage: (amount) => {
+    set((state) => ({ wage: state.wage + amount }));
+    get().checkProgression();
+  },
+
+  logMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
+
+  checkProgression: () => {
+    const { wage, logMessage } = get();
+
+    if (wage === 1) {
+      logMessage(
+        "You have proven that you can do basic tasks. Keep going. Remember — steady work leads to steady pay."
+      );
+    }
+
+    if (wage === 5) {
+      logMessage("Upgrades are now available.");
+      set({ upgradesUnlocked: true });
+    }
+  },
 }));

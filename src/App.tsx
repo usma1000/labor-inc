@@ -16,7 +16,7 @@ export default function App() {
         <Button />
       </div>
       <Console>
-        {useGameStore((state) => state.log).map((msg, i) => (
+        {useGameStore((state) => state.messages).map((msg, i) => (
           <p key={i}>{msg}</p>
         ))}
       </Console>

@@ -3,10 +3,7 @@ import { useGameStore } from "../store";
 
 // Constants for cleaner code
 const LIGHT_COUNT = 5;
-const LIGHT_INTERVAL_MS = 1000;
 const FLASH_INTERVAL_MS = 350;
-const COOLDOWN_DURATION_MS = 5000;
-const WAGE_AMOUNT = 1;
 
 export default function Button() {
   // State for button and lights
@@ -20,9 +17,10 @@ export default function Button() {
   const cooldownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Store access
-  const addWage = useGameStore((state) => state.increaseWage);
-  const wage = useGameStore((state) => state.wage);
-  const addLogMessage = useGameStore((state) => state.addLogMessage);
+  const buttonWageAmount = useGameStore((state) => state.buttonWageAmount);
+  const buttonCooldownTime = useGameStore((state) => state.buttonCooldownTime);
+  const buttonHoldTime = useGameStore((state) => state.buttonHoldTime);
+  const addWage = useGameStore((state) => state.addWage);
 
   /**
    * Clears all active timers and intervals
@@ -47,13 +45,7 @@ export default function Button() {
    */
   const startCooldown = () => {
     setCooldown(true);
-    // If this is the first dollar earned, add log message
-    if (wage < 1) {
-      addLogMessage(
-        "You have proven that you can do basic tasks. Keep going. Remember — steady work leads to steady pay."
-      );
-    }
-    addWage(WAGE_AMOUNT);
+    addWage(buttonWageAmount);
 
     // Configure flashing lights
     setFlash(true);
@@ -69,7 +61,7 @@ export default function Button() {
       if (flashIntervalRef.current) clearInterval(flashIntervalRef.current);
       flashIntervalRef.current = null;
       cooldownTimeoutRef.current = null;
-    }, COOLDOWN_DURATION_MS);
+    }, buttonCooldownTime);
   };
 
   const handlePointerDown = () => {
@@ -90,7 +82,7 @@ export default function Button() {
         clearAllTimers();
         startCooldown();
       }
-    }, LIGHT_INTERVAL_MS);
+    }, buttonHoldTime / LIGHT_COUNT);
   };
 
   const handlePointerUp = () => {
