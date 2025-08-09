@@ -18,7 +18,7 @@ export default function Footer() {
       </div>
       <div className="py-2">
         <button className="btn" disabled={!upgradesUnlocked}>
-          Upgrade
+          Expanded Operations
         </button>
       </div>
     </div>
