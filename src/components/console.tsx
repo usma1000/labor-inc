@@ -9,8 +9,8 @@ interface ConsoleProps {
   padding?: "p-6" | "p-2";
   /** When true, hides only the outermost layer of the console. If undefined, will be responsive. */
   recessed?: boolean;
-  /** Controls height of the content area: 'h-32' (fixed, default) or 'auto' */
-  height?: "h-32" | "auto";
+  /** Controls height of the content area: 'h-48' (fixed, default) or 'auto' */
+  height?: "h-48" | "auto";
   /** Optional minimum width (CSS value like '300px' or '20rem') */
   minWidth?: string;
 }

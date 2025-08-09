@@ -17,7 +17,7 @@ export default function UpgradesDialog({ isOpen, onOpenChange }: Props) {
     return (
       <div
         key={upgrade.id}
-        className="bg-beige/50 rounded-md p-4 space-y-3 border-t-1 border-screen shadow-sm"
+        className="bg-screen/50 rounded-md p-4 space-y-3 border-t-1 border-screen shadow-sm"
       >
         <div className="flex items-start gap-4">
           <div className="flex-1 min-w-0">
@@ -29,7 +29,7 @@ export default function UpgradesDialog({ isOpen, onOpenChange }: Props) {
           <div className="font-mono text-right text-sm shrink-0">
             <p className="text-darkstone/60">Level {upgrade.level}</p>
             <p className="font-semibold whitespace-nowrap">
-              Cost: {upgrade.currentCost} ₥
+              Cost: ₥{upgrade.currentCost}
             </p>
           </div>
         </div>

@@ -6,7 +6,7 @@ export default function Footer() {
 
   return (
     <div className="p-4">
-      <Console>
+      <Console height="h-48">
         {messages.map((msg, i) => (
           <p className="mb-2" key={i}>
             {msg}
