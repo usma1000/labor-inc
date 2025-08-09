@@ -16,10 +16,10 @@ export default function Footer() {
     return (
       <div
         key={upgrade.id}
-        style={{ border: "1px solid #666", padding: "8px", margin: "8px 0" }}
+        className="border-gray-600 border-1 rounded-md p-2 space-y-2"
       >
-        <h3>{upgrade.name}</h3>
-        <p>{upgrade.description}</p>
+        <h3 className="font-semibold text-lg">{upgrade.name}</h3>
+        <p className="text-sm text-gray-800 italic">{upgrade.description}</p>
         <p>Level: {upgrade.level}</p>
         <p>Cost: {upgrade.currentCost} Merits</p>
         <p>
@@ -69,9 +69,11 @@ export default function Footer() {
               maxHeight: "60vh",
               overflowY: "auto",
             }}
-            className="panel z-20"
+            className="panel z-20 space-y-4"
           >
-            <h2>Available Upgrades (Merits: {wage})</h2>
+            <h2 className="text-xl font-semibold">
+              Expanded Operations (Merits: {wage})
+            </h2>
             {Object.values(buttonUpgrades).map(renderUpgrade)}
           </div>
         )}
