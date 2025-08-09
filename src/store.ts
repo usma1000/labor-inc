@@ -37,13 +37,13 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   // --- Button Upgrade State ---
   buttonWageAmount: 1,
-  buttonCooldownTime: 1000,
-  buttonHoldTime: 1000,
+  buttonCooldownTime: 5000,
+  buttonHoldTime: 3000,
 
   // --- Lever Upgrade State ---
   leverUnlocked: false,
   leverWageAmount: 1,
-  leverDragSpeed: 100,
+  leverDragSpeed: 0.2,
   leverResetSpeed: 1000,
 
   // --- Actions ---
@@ -81,14 +81,14 @@ export const useGameStore = create<GameState>((set, get) => ({
       );
     });
 
-    triggerMilestone("unlock_upgrades", wage >= 2, () => {
+    triggerMilestone("unlock_upgrades", wage >= 5, () => {
       logMessage(
         "Upgrades are now available for purchase. Use your own wage to buy them."
       );
       set({ upgradesUnlocked: true });
     });
 
-    triggerMilestone("lever_unlock", wage >= 3, () => {
+    triggerMilestone("lever_unlock", wage >= 10, () => {
       logMessage(
         "Lever upgrades are now available. A good employee knows how to use all available tools to maximize productivity."
       );

@@ -35,17 +35,20 @@ export default function Lever() {
           }}
           dragElastic={0}
           dragMomentum={false}
+          dragTransition={{
+            timeConstant: leverDragSpeed,
+            power: 0.2,
+            modifyTarget: (target) => target,
+          }}
           whileDrag={{ cursor: "grabbing" }}
           style={{
             position: "absolute",
             width: HANDLE_RADIUS,
             height: HANDLE_RADIUS,
-            borderRadius: "50%",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
-            border: "2px solid #535149",
-            background: "var(--color-screen)",
-            zIndex: 2,
+            boxShadow:
+              "0 2px 4px rgba(0,0,0,0.7), inset 0 4px 10px rgba(255, 255, 255, 0.5)",
           }}
+          className="rounded-full bg-screen z-10"
         />
       </div>
     </div>
