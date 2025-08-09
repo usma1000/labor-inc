@@ -1,81 +1,16 @@
 import Header from "./components/header";
-import Console from "./components/console";
-import Button from "./components/button";
-import { useGameStore } from "./store";
-import Lever from "./components/lever";
 import Footer from "./components/footer";
-import UpgradesDialog from "./components/upgrades-dialog";
-import { useState } from "react";
+import Dashboard from "./components/dashboard";
+import Controls from "./components/controls";
 
 export default function App() {
-  const wage = useGameStore((state) => state.wage);
-  const leverUnlocked = useGameStore((state) => state.leverUnlocked);
-  const upgradesUnlocked = useGameStore((state) => state.upgradesUnlocked);
-  const [showUpgrades, setShowUpgrades] = useState(false);
-
   return (
     <div className="space-y-4 p-2 w-full min-h-screen flex flex-col justify-between font-mono">
       <Header />
 
       <div className="flex flex-col items-center space-y-4">
-        <div className="flex justify-center flex-wrap gap-4">
-          <div className="panel">
-            <Console recessed height="auto" minWidth="200px">
-              <div className="flex justify-between items-baseline">
-                <span className="text-sm">Merits™: </span>
-                <span className="font-semibold">₥{wage}</span>
-              </div>
-            </Console>
-          </div>
-          <UpgradesDialog
-            isOpen={showUpgrades}
-            onOpenChange={setShowUpgrades}
-          />
-          <button
-            className="btn"
-            disabled={!upgradesUnlocked}
-            onClick={() => setShowUpgrades(true)}
-          >
-            Expanded Operations
-          </button>
-        </div>
-        <div className="space-y-4">
-          <div className="flex justify-center gap-4">
-            <div className="panel relative">
-              <Button />
-              <div className="absolute inset-x-0 bottom-0 h-8 warning-stripes">
-                <div className="absolute left-1/2 -translate-x-1/2 bottom-0.5">
-                  <div className="sticker">Button</div>
-                </div>
-              </div>
-            </div>
-            <div className="panel relative min-w-48">
-              {/* knob will go here */}
-              <div className="absolute inset-x-0 top-0 bottom-0 warning-stripes">
-                <div className="absolute left-1/2 -translate-x-1/2 bottom-0.5">
-                  <div className="sticker">Knob</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="panel relative overflow-hidden">
-            <div className="pt-8">
-              <Lever />
-            </div>
-            <div
-              className={`absolute inset-0 bg-beige transition-transform duration-500 ${
-                leverUnlocked ? "-translate-y-8/12" : ""
-              }`}
-            >
-              <div className="absolute inset-0 z-10 warning-stripes">
-                <div className="absolute left-1/2 bottom-2 -translate-x-1/2">
-                  <div className="sticker">Lever</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Dashboard />
+        <Controls />
       </div>
 
       <Footer />
