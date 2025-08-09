@@ -29,7 +29,9 @@ export default function Button() {
   // Initialize audio elements once, but only after user interaction
   const initializeAudio = () => {
     if (!depressSoundRef.current) {
-      depressSoundRef.current = new Audio("button-depress.wav");
+      const basePath =
+        window.location.hostname === "localhost" ? "" : "/labor-inc";
+      depressSoundRef.current = new Audio(`${basePath}/button-depress.wav`);
       // Pre-load the audio
       depressSoundRef.current.load();
     }
