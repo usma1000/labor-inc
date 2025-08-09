@@ -1,30 +1,41 @@
 import { create } from "zustand";
+import type {
+  GameState,
+  ToolName,
+  ToolUpgrades,
+  UpgradeConfig,
+  UpgradeState,
+} from "./types";
+import { calcCost, calcEffect } from "./upgrades/helpers";
+import { allUpgrades } from "./upgrades";
 
-type GameState = {
-  // --- Core State ---
-  wage: number;
-  messages: string[];
-  lastWageEarned: Date | null; // Track last wage earned time
-  upgradesUnlocked: boolean;
-  milestonesReached: Set<string>; // Tracks which milestones have been triggered
+function initUpgradeState(cfg: UpgradeConfig): UpgradeState {
+  return {
+    ...cfg,
+    level: 0,
+    currentCost: calcCost(cfg.baseCost, cfg.costMultiplier, 0),
+    currentEffect:
+      cfg.id === "autoPress"
+        ? false
+        : calcEffect(cfg.effectBase, cfg.effectStep, 0, cfg.minEffect),
+  };
+}
 
-  // --- Button Upgrade State ---
-  buttonWageAmount: number; // Amount earned per button press
-  buttonCooldownTime: number; // Cooldown time (ms) after button is pressed
-  buttonHoldTime: number; // Time (ms) required to hold button
+function groupUpgradesByTool(
+  configs: UpgradeConfig[]
+): Record<ToolName, ToolUpgrades> {
+  const grouped: Record<ToolName, ToolUpgrades> = {
+    button: {},
+    lever: {},
+    dial: {},
+  };
 
-  // --- Lever Upgrade State ---
-  leverUnlocked: boolean; // Whether lever upgrades are available
-  leverWageAmount: number; // Amount earned per lever pull
-  leverDragSpeed: number; // Speed of lever drag (px/ms)
-  leverResetSpeed: number; // Speed of lever reset (px/ms)
+  for (const cfg of configs) {
+    grouped[cfg.tool][cfg.id] = initUpgradeState(cfg);
+  }
 
-  // --- Actions ---
-  addWage: (amount: number) => void; // Add to wage and check progression
-  spendWage: (amount: number) => void; // Subtract from wage and check progression
-  logMessage: (msg: string) => void; // Add a message to the log
-  checkProgression: () => void; // Check and trigger milestone logic
-};
+  return grouped;
+}
 
 export const useGameStore = create<GameState>((set, get) => {
   // Audio for message notification
@@ -33,7 +44,101 @@ export const useGameStore = create<GameState>((set, get) => {
     messageAudio = new Audio("/message.wav");
   }
 
+  const upgradesInit = groupUpgradesByTool(allUpgrades);
+
+  // Initialize stats per tool or zero if missing
+  const meritYield: Record<ToolName, number> = {
+    button: (upgradesInit.button.yield?.currentEffect as number) || 0,
+    lever: (upgradesInit.lever.yield?.currentEffect as number) || 0,
+    dial: (upgradesInit.dial.yield?.currentEffect as number) || 0,
+  };
+
+  const holdTime: Record<ToolName, number> = {
+    button: (upgradesInit.button.holdTime?.currentEffect as number) || 0,
+    lever: (upgradesInit.lever.holdTime?.currentEffect as number) || 0,
+    dial: (upgradesInit.dial.holdTime?.currentEffect as number) || 0,
+  };
+
+  const cooldownTime: Record<ToolName, number> = {
+    button: (upgradesInit.button.cooldown?.currentEffect as number) || 0,
+    lever: (upgradesInit.lever.cooldown?.currentEffect as number) || 0,
+    dial: (upgradesInit.dial.cooldown?.currentEffect as number) || 0,
+  };
+
+  const autoPressEnabled: Record<ToolName, boolean> = {
+    button: (upgradesInit.button.autoPress?.currentEffect as boolean) || false,
+    lever: (upgradesInit.lever.autoPress?.currentEffect as boolean) || false,
+    dial: (upgradesInit.dial.autoPress?.currentEffect as boolean) || false,
+  };
+
   const store: GameState = {
+    upgrades: upgradesInit,
+    meritYield,
+    holdTime,
+    cooldownTime,
+    autoPressEnabled,
+
+    purchaseUpgrade: (tool, upgradeId) => {
+      const upgrades = { ...get().upgrades };
+      const upgrade = upgrades[tool][upgradeId];
+      if (!upgrade) return;
+
+      // TODO: check if player has enough merits here before buying
+
+      const newLevel = upgrade.level + 1;
+      const newCost = calcCost(
+        upgrade.baseCost,
+        upgrade.costMultiplier,
+        newLevel
+      );
+      const newEffect =
+        upgrade.id === "autoPress"
+          ? true
+          : calcEffect(
+              upgrade.effectBase,
+              upgrade.effectStep,
+              newLevel,
+              upgrade.minEffect
+            );
+
+      upgrades[tool] = {
+        ...upgrades[tool],
+        [upgradeId]: {
+          ...upgrade,
+          level: newLevel,
+          currentCost: newCost,
+          currentEffect: newEffect,
+        },
+      };
+
+      set({
+        upgrades,
+        meritYield: {
+          ...get().meritYield,
+          [tool]: upgrades[tool].yield
+            ? (upgrades[tool].yield.currentEffect as number)
+            : 0,
+        },
+        holdTime: {
+          ...get().holdTime,
+          [tool]: upgrades[tool].holdTime
+            ? (upgrades[tool].holdTime.currentEffect as number)
+            : 0,
+        },
+        cooldownTime: {
+          ...get().cooldownTime,
+          [tool]: upgrades[tool].cooldown
+            ? (upgrades[tool].cooldown.currentEffect as number)
+            : 0,
+        },
+        autoPressEnabled: {
+          ...get().autoPressEnabled,
+          [tool]: upgrades[tool].autoPress
+            ? (upgrades[tool].autoPress.currentEffect as boolean)
+            : false,
+        },
+      });
+    },
     // --- Core State ---
     wage: 0,
     messages: [

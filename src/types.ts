@@ -1,20 +1,61 @@
-export type ButtonUpgradeType = "yield" | "holdTime" | "cooldown" | "autoPress";
-
+export type ToolName = "button" | "lever" | "dial";
 export interface UpgradeConfig {
-  id: ButtonUpgradeType;
+  tool: ToolName;
+  id: string; // e.g. "yield", "holdTime"
   name: string;
   description: string;
   baseCost: number;
   costMultiplier: number;
   maxLevel?: number;
-  effectBase: number; // starting effect (e.g. 1 merit, 5 sec)
-  effectStep: number; // increment or decrement per level
-  minEffect?: number; // for holdTime/cooldown limits
+  effectBase: number;
+  effectStep: number;
+  minEffect?: number;
   isUnlocked: boolean;
 }
 
 export interface UpgradeState extends UpgradeConfig {
   level: number;
   currentCost: number;
-  currentEffect: number | boolean; // boolean for autoPress (on/off)
+  currentEffect: number | boolean;
 }
+export type ToolUpgrades = Record<string, UpgradeState>;
+
+// TODO: this needs to be merged with GameState below
+// this is the new approach to track upgrades
+// instead of tracking upgrade state for each tool separately, track it per upgrade
+
+// export interface GameState {
+//   upgrades: Record<ToolName, ToolUpgrades>;
+//   meritYield: Record<ToolName, number>;
+//   holdTime: Record<ToolName, number>;
+//   cooldownTime: Record<ToolName, number>;
+//   autoPressEnabled: Record<ToolName, boolean>;
+
+//   purchaseUpgrade: (tool: ToolName, upgradeId: string) => void;
+// }
+
+export type GameState = {
+  // --- Core State ---
+  wage: number;
+  messages: string[];
+  lastWageEarned: Date | null; // Track last wage earned time
+  upgradesUnlocked: boolean;
+  milestonesReached: Set<string>; // Tracks which milestones have been triggered
+
+  // --- Button Upgrade State ---
+  buttonWageAmount: number; // Amount earned per button press
+  buttonCooldownTime: number; // Cooldown time (ms) after button is pressed
+  buttonHoldTime: number; // Time (ms) required to hold button
+
+  // --- Lever Upgrade State ---
+  leverUnlocked: boolean; // Whether lever upgrades are available
+  leverWageAmount: number; // Amount earned per lever pull
+  leverDragSpeed: number; // Speed of lever drag (px/ms)
+  leverResetSpeed: number; // Speed of lever reset (px/ms)
+
+  // --- Actions ---
+  addWage: (amount: number) => void; // Add to wage and check progression
+  spendWage: (amount: number) => void; // Subtract from wage and check progression
+  logMessage: (msg: string) => void; // Add a message to the log
+  checkProgression: () => void; // Check and trigger milestone logic
+};

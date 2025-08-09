@@ -1,7 +1,8 @@
-import type { UpgradeConfig, UpgradeState } from "../types";
+import type { UpgradeConfig } from "../types";
 
-export const initialUpgrades: UpgradeConfig[] = [
+export const buttonUpgrades: UpgradeConfig[] = [
   {
+    tool: "button",
     id: "yield",
     name: "Output Optimization",
     description: "Increase merit earned per completed task.",
@@ -12,6 +13,7 @@ export const initialUpgrades: UpgradeConfig[] = [
     isUnlocked: true,
   },
   {
+    tool: "button",
     id: "holdTime",
     name: "Ergonomic Interface",
     description: "Reduce button hold time (min 2s).",
@@ -23,6 +25,7 @@ export const initialUpgrades: UpgradeConfig[] = [
     isUnlocked: true,
   },
   {
+    tool: "button",
     id: "cooldown",
     name: "Cycle Time Reduction",
     description: "Reduce button cooldown time (min 1s).",
@@ -34,6 +37,7 @@ export const initialUpgrades: UpgradeConfig[] = [
     isUnlocked: true,
   },
   {
+    tool: "button",
     id: "autoPress",
     name: "Auto-Press Module",
     description: "Automate the button press, removing hold time.",
@@ -44,38 +48,3 @@ export const initialUpgrades: UpgradeConfig[] = [
     isUnlocked: false,
   },
 ];
-
-export function calcCost(
-  baseCost: number,
-  multiplier: number,
-  level: number
-): number {
-  return Math.floor(baseCost * Math.pow(multiplier, level));
-}
-
-export function calcEffect(
-  effectBase: number,
-  effectStep: number,
-  level: number,
-  minEffect?: number
-): number {
-  const rawEffect = effectBase + effectStep * level;
-  if (minEffect !== undefined) {
-    return effectStep < 0
-      ? Math.max(minEffect, rawEffect)
-      : Math.min(minEffect, rawEffect);
-  }
-  return rawEffect;
-}
-
-export function initUpgradeState(cfg: UpgradeConfig): UpgradeState {
-  return {
-    ...cfg,
-    level: 0,
-    currentCost: calcCost(cfg.baseCost, cfg.costMultiplier, 0),
-    currentEffect:
-      cfg.id === "autoPress"
-        ? false // off at start
-        : calcEffect(cfg.effectBase, cfg.effectStep, 0, cfg.minEffect),
-  };
-}
