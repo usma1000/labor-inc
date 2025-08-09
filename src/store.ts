@@ -48,6 +48,7 @@ export const useGameStore = create<GameState>((set, get) => {
     const basePath =
       window.location.hostname === "localhost" ? "" : "/labor-inc";
     messageAudio = new Audio(`${basePath}/message.wav`);
+    messageAudio.volume = 0.15;
   }
 
   const upgradesInit = groupUpgradesByTool(allUpgrades);
