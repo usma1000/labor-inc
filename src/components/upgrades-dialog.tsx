@@ -58,17 +58,19 @@ export default function UpgradesDialog({ isOpen, onOpenChange }: Props) {
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-darkstone/50 backdrop-blur-sm" />
-        <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[600px] max-h-[85vh] bg-screen panel z-30 p-8">
-          <div className="flex justify-between items-center mb-6">
-            <Dialog.Title className="text-2xl font-semibold">
-              Expanded Operations (Merits: {wage})
-            </Dialog.Title>
-            <Dialog.Close asChild>
-              <button className="btn p-2 px-3">×</button>
-            </Dialog.Close>
-          </div>
-          <div className="overflow-y-auto pr-2 space-y-4">
-            {Object.values(buttonUpgrades).map(renderUpgrade)}
+        <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[600px] max-h-[85vh] bg-screen panel z-30 overflow-hidden">
+          <div className="h-full flex flex-col max-h-[85vh]">
+            <div className="flex justify-between items-center p-8 pb-6">
+              <Dialog.Title className="text-2xl font-semibold">
+                Expanded Operations (Merits: {wage})
+              </Dialog.Title>
+              <Dialog.Close asChild>
+                <button className="btn p-2 px-3">×</button>
+              </Dialog.Close>
+            </div>
+            <div className="flex-1 overflow-y-auto px-8 pb-8 space-y-4">
+              {Object.values(buttonUpgrades).map(renderUpgrade)}
+            </div>
           </div>
         </Dialog.Content>
       </Dialog.Portal>

@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-beige-dark: #bbbab9;
-  --color-beige: #c2c0bd;
-  --color-screen: #dfdbd2;
+  --color-beige-dark: #c5c2bd;
+  --color-beige: #dcdbd8;
+  --color-screen: #f5f3ef;
   --color-ink: #373633;
-  --color-stone: #86837b;
-  --color-darkstone: #535149;
+  --color-stone: #b2afa7;
+  --color-darkstone: #73716a;
 }
 
 #root {
@@ -33,4 +33,5 @@
 
 .panel {
   @apply bg-beige text-ink rounded-lg shadow-sm shadow-darkstone p-6 border-t-1 border-screen;
+  transition: background-color 0.5s ease-in-out;
 }

@@ -29,11 +29,24 @@ export default function App() {
             <Button />
           </div>
 
-          {leverUnlocked && (
-            <div className="panel">
+          <div className="panel relative overflow-hidden">
+            <div>
               <Lever />
             </div>
-          )}
+            <div
+              className={`absolute inset-0 bg-beige transition-transform duration-500 ${
+                leverUnlocked ? "-translate-y-full" : ""
+              }`}
+            >
+              <div
+                className="absolute inset-0 z-10"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(-45deg, #313130 0, #313130 10px, #f8cf30 10px, #f8cf30 20px)",
+                }}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
