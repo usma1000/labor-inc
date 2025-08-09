@@ -1,0 +1,87 @@
+/**
+ * Props for the Console component
+ */
+interface ConsoleProps {
+  /** Content to display inside the console */
+  children: React.ReactNode;
+  /** Controls padding of the middle layer: 'p-6' (default) or 'p-2' for small mode */
+  padding?: "p-6" | "p-2";
+  /** When true, hides only the outermost layer of the console */
+  recessed?: boolean;
+  /** Controls height of the content area: 'h-32' (fixed, default) or 'auto' */
+  height?: "h-32" | "auto";
+  /** Optional minimum width (CSS value like '300px' or '20rem') */
+  minWidth?: string;
+}
+
+/**
+ * Console component that displays content in a retro-style screen with gradient borders
+ */
+export default function Console(props: ConsoleProps) {
+  const {
+    children,
+    padding = "p-5",
+    recessed = false,
+    height = "h-32",
+    minWidth,
+  } = props;
+
+  // Convert height prop to actual class name
+  const heightClass = height === "auto" ? "" : height;
+
+  /**
+   * Renders the inner screen with content
+   */
+  const renderInnerScreen = () => (
+    <div
+      className="relative rounded-lg border-4 border-ink"
+      style={minWidth ? { minWidth } : undefined}
+    >
+      <div
+        className={`bg-screen py-2 px-4 rounded-md shadow-inner shadow-gray-500 leading-loose overflow-y-auto ${heightClass}`}
+      >
+        {children}
+      </div>
+    </div>
+  );
+
+  /**
+   * Renders the middle layer with gradient border
+   */
+  const renderMiddleLayer = (paddingClass = "p-2") => (
+    <div
+      className={`relative rounded-lg ${paddingClass}`}
+      style={{
+        background:
+          "linear-gradient(to bottom, var(--color-darkstone) 0%, var(--color-darkstone) 4px, var(--color-stone) 12px, var(--color-stone) calc(100% - 12px), var(--color-screen) calc(100% - 4px), var(--color-screen) 100%)",
+      }}
+    >
+      {renderInnerScreen()}
+    </div>
+  );
+
+  // In recessed mode, we only render the middle and inner layers
+  if (recessed) {
+    return (
+      <div className={`bg-beige rounded-xl ${padding}`}>
+        {renderMiddleLayer("p-1")}
+      </div>
+    );
+  }
+
+  // Full console mode with all layers
+  return (
+    <div
+      className="bg-beige text-ink p-1 rounded-2xl font-mono m-4 relative"
+      style={{
+        background:
+          "linear-gradient(to bottom, var(--color-screen) 0%, var(--color-screen) 4px, var(--color-stone) 12px, var(--color-stone) calc(100% - 12px), var(--color-darkstone) calc(100% - 4px), var(--color-darkstone) 100%)",
+        boxShadow: "0 6px 10px rgba(0, 0, 0, 0.5)",
+      }}
+    >
+      <div className={`bg-beige rounded-xl ${padding}`}>
+        {renderMiddleLayer()}
+      </div>
+    </div>
+  );
+}

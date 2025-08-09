@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --color-beige: #c2c0bd;
+  --color-screen: #dfdbd2;
+  --color-ink: #373633;
+  --color-stone: #86837b;
+  --color-darkstone: #535149;
+}
+
+#root {
+  @apply bg-beige text-ink min-h-screen flex items-center justify-center;
+}
