@@ -78,14 +78,18 @@ export const useGameStore = create<GameState>((set, get) => {
     cooldownTime,
     autoPressEnabled,
 
-    purchaseUpgrade: (tool, upgradeId) => {
-      const upgrades = { ...get().upgrades };
+    purchaseUpgrade: (tool: ToolName, upgradeId: string) => {
+      const state = get();
+      const upgrades = { ...state.upgrades };
       const upgrade = upgrades[tool][upgradeId];
       if (!upgrade) return;
 
-      // TODO: check if player has enough merits here before buying
+      // Check if player has enough merits
+      if (state.wage < upgrade.currentCost) return;
 
       const newLevel = upgrade.level + 1;
+      if (upgrade.maxLevel && newLevel > upgrade.maxLevel) return;
+
       const newCost = calcCost(
         upgrade.baseCost,
         upgrade.costMultiplier,
@@ -110,6 +114,9 @@ export const useGameStore = create<GameState>((set, get) => {
           currentEffect: newEffect,
         },
       };
+
+      // Spend the merits
+      state.spendWage(upgrade.currentCost);
 
       set({
         upgrades,

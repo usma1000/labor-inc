@@ -42,6 +42,14 @@ export type GameState = {
   upgradesUnlocked: boolean;
   milestonesReached: Set<string>; // Tracks which milestones have been triggered
 
+  // --- Upgrade System ---
+  upgrades: Record<ToolName, ToolUpgrades>;
+  meritYield: Record<ToolName, number>;
+  holdTime: Record<ToolName, number>;
+  cooldownTime: Record<ToolName, number>;
+  autoPressEnabled: Record<ToolName, boolean>;
+  purchaseUpgrade: (tool: ToolName, upgradeId: string) => void;
+
   // --- Button Upgrade State ---
   buttonWageAmount: number; // Amount earned per button press
   buttonCooldownTime: number; // Cooldown time (ms) after button is pressed
