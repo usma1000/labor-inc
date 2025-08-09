@@ -141,8 +141,8 @@ export default function Lever() {
   }, [addWage, leverWageAmount, handlePointerMove, startResetAnimation, MAX_X]);
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="flex items-center gap-2">
+    <div className="flex flex-col items-center">
+      <div className="flex items-center gap-4">
         <div
           ref={trackRef}
           className="relative bg-stone-400"
@@ -206,10 +206,9 @@ export default function Lever() {
             className="rounded-full"
           />
         </div>
+        {/* Status light */}
+        <StatusLight color={lightColor} size={12} />
       </div>
-
-      {/* Status light */}
-      <StatusLight color={lightColor} size={12} />
     </div>
   );
 }
