@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useGameStore } from "../store";
+import StatusLight, { type StatusLightColor } from "./status-light";
 
 // Constants for cleaner code
 const LIGHT_COUNT = 5;
@@ -101,41 +102,14 @@ export default function Button() {
     return clearAllTimers;
   }, []);
 
-  // CSS style constants
-  const lightStyles = {
-    green: {
-      background:
-        "radial-gradient(circle at 60% 35%, #baffc9 0%, #00ff77 60%, #007f3b 100%)",
-      boxShadow:
-        "0 0 16px 4px #00ff77, 0 2px 8px 0 #007f3b, 0 0 0 2px #baffc9 inset",
-      highlight: "rgba(255,255,255,0.55)",
-      shadow: "rgba(0,64,32,0.22)",
-    },
-    yellow: {
-      background:
-        "radial-gradient(circle at 60% 35%, #fff9c4 0%, #ffe066 60%, #bfa600 100%)",
-      boxShadow:
-        "0 0 16px 4px #ffe066, 0 2px 8px 0 #bfa600, 0 0 0 2px #fff9c4 inset",
-      highlight: "rgba(255,255,255,0.55)",
-      shadow: "rgba(64,64,0,0.22)",
-    },
-    inactive: {
-      background:
-        "radial-gradient(circle at 60% 35%, #e0e0e0 0%, #b0b0b0 60%, #888 100%)",
-      boxShadow: "0 1px 4px 0 #888, 0 0 0 2px #ccc inset",
-      highlight: "rgba(255,255,255,0.25)",
-      shadow: "rgba(0,0,0,0.10)",
-    },
-  };
-
-  // Helper to determine light color and active state
-  const getLightStyle = (index: number) => {
+  // Helper to determine light color
+  const getLightColor = (index: number): StatusLightColor => {
     if (cooldown) {
       // During cooldown, flash yellow
-      return flash ? lightStyles.yellow : lightStyles.inactive;
+      return flash ? "yellow" : "inactive";
     }
     // While charging, show green for filled lights
-    return lights > index ? lightStyles.green : lightStyles.inactive;
+    return lights > index ? "green" : "inactive";
   };
 
   // Stay pressed in during cooldown with the pressed CSS class
@@ -172,55 +146,9 @@ export default function Button() {
 
       {/* Progress lights */}
       <div className="flex gap-3 mt-6">
-        {Array.from({ length: LIGHT_COUNT }).map((_, i) => {
-          const style = getLightStyle(i);
-          return (
-            <span key={i} className="relative flex items-center justify-center">
-              <span
-                className="block"
-                style={{
-                  width: "0.75em",
-                  height: "0.75em",
-                  borderRadius: "50%",
-                  background: style.background,
-                  boxShadow: style.boxShadow,
-                  border: "1px solid #22222266",
-                  display: "block",
-                  position: "relative",
-                }}
-              >
-                {/* highlight reflection */}
-                <span
-                  style={{
-                    position: "absolute",
-                    left: "28%",
-                    top: "18%",
-                    width: "28%",
-                    height: "18%",
-                    borderRadius: "50%",
-                    background: style.highlight,
-                    filter: "blur(1.5px)",
-                    pointerEvents: "none",
-                  }}
-                />
-                {/* bottom shadow */}
-                <span
-                  style={{
-                    position: "absolute",
-                    left: "18%",
-                    bottom: "10%",
-                    width: "64%",
-                    height: "22%",
-                    borderRadius: "50%",
-                    background: style.shadow,
-                    filter: "blur(2.5px)",
-                    pointerEvents: "none",
-                  }}
-                />
-              </span>
-            </span>
-          );
-        })}
+        {Array.from({ length: LIGHT_COUNT }).map((_, i) => (
+          <StatusLight key={i} color={getLightColor(i)} />
+        ))}
       </div>
     </div>
   );
