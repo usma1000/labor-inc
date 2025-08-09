@@ -153,19 +153,12 @@ export default function Lever() {
             boxShadow:
               "inset 0 8px 10px rgba(30, 30, 30, 0.7), inset 0px -1px 0px #ffffff",
             position: "relative",
-            overflow: "hidden",
           }}
         >
           {/* Tick marks */}
           <div className="absolute -right-3 top-0 h-full flex flex-col justify-between py-4">
-            {[...Array(5)].map((_, i) => (
-              <div
-                key={i}
-                className="w-2 h-[1px] bg-stone-400"
-                style={{
-                  boxShadow: "0 1px 1px rgba(0, 0, 0, 0.3)",
-                }}
-              />
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="w-2 h-[1px] bg-stone" />
             ))}
           </div>
 
