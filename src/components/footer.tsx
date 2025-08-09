@@ -66,12 +66,10 @@ export default function Footer() {
               position: "fixed",
               right: "20px",
               bottom: "80px",
-              background: "#eee",
-              padding: "16px",
-              border: "1px solid #666",
               maxHeight: "60vh",
               overflowY: "auto",
             }}
+            className="panel"
           >
             <h2>Available Upgrades (Merits: {wage})</h2>
             {Object.values(buttonUpgrades).map(renderUpgrade)}

@@ -211,7 +211,7 @@ export const useGameStore = create<GameState>((set, get) => {
 
       triggerMilestone("third_wage", wage >= 3, () => {
         logMessage(
-          "The Button is not merely a tool — it is a conduit. Push with intent, release with purpose."
+          "The Button is not merely a Tool — it is a conduit. Push with intent, release with purpose."
         );
       });
 
@@ -224,7 +224,7 @@ export const useGameStore = create<GameState>((set, get) => {
 
       triggerMilestone("unlock_lever", wage >= 10, () => {
         logMessage(
-          "A new Task is now available. A good Associate knows how to use all available tools to maximize productivity. Remember: Efficiency is the highest form of self-respect. The Lever serves you as much as you serve The Lever."
+          "A new Tool is now available. A good Associate knows how to use all available Tools to maximize productivity. Remember: Efficiency is the highest form of self-respect. The Lever serves you as much as you serve The Lever."
         );
         set({ leverUnlocked: true });
       });
