@@ -232,7 +232,7 @@ export const useGameStore = create<GameState>((set, get) => {
       triggerMilestone(
         "wage_idle",
         lastWageEarned !== null &&
-          new Date().getTime() - lastWageEarned.getTime() > 3000,
+          new Date().getTime() - lastWageEarned.getTime() > 30000,
         () => {
           logMessage(
             "A minor deviation in your output curve has been observed and logged. Your last Merits™ acquisition occurred at " +

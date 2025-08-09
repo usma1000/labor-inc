@@ -21,7 +21,7 @@ export default function Button() {
   const depressSoundRef = useRef<HTMLAudioElement | null>(null);
 
   // Store access
-  const buttonWageAmount = useGameStore((state) => state.buttonWageAmount);
+  const meritYield = useGameStore((state) => state.meritYield.button);
   const buttonCooldownTime = useGameStore((state) => state.buttonCooldownTime);
   const buttonHoldTime = useGameStore((state) => state.buttonHoldTime);
   const addWage = useGameStore((state) => state.addWage);
@@ -54,7 +54,7 @@ export default function Button() {
    */
   const startCooldown = () => {
     setCooldown(true);
-    addWage(buttonWageAmount);
+    addWage(meritYield);
 
     // Configure flashing lights
     setFlash(true);
