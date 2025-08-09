@@ -40,8 +40,13 @@ export default function App() {
           </button>
         </div>
         <div className="flex justify-center gap-6">
-          <div className="panel">
+          <div className="panel relative">
             <Button />
+            <div className="absolute inset-x-0 bottom-0 h-8 warning-stripes">
+              <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/3">
+                <div className="sticker">Button</div>
+              </div>
+            </div>
           </div>
 
           <div className="panel relative overflow-hidden">
@@ -53,13 +58,7 @@ export default function App() {
                 leverUnlocked ? "-translate-y-full" : ""
               }`}
             >
-              <div
-                className="absolute inset-0 z-10"
-                style={{
-                  backgroundImage:
-                    "repeating-linear-gradient(-45deg, #313130 0, #313130 10px, #f8cf30 10px, #f8cf30 20px)",
-                }}
-              />
+              <div className="absolute inset-0 z-10 warning-stripes" />
             </div>
           </div>
         </div>
