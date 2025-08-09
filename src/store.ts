@@ -25,80 +25,95 @@ type GameState = {
   checkProgression: () => void; // Check and trigger milestone logic
 };
 
-export const useGameStore = create<GameState>((set, get) => ({
-  // --- Core State ---
-  wage: 0,
-  messages: [
-    "Welcome, Associate. You are now an essential part of Objet Systems, where every spark of Desire is refined into measurable Productivity™.",
-    "Your first Task awaits. Remember: your output ensures your well-being, and your well-being ensures output. (Your work is being monitored for your own safety.)",
-  ],
-  upgradesUnlocked: false,
-  milestonesReached: new Set(),
+export const useGameStore = create<GameState>((set, get) => {
+  // Audio for message notification
+  let messageAudio: HTMLAudioElement | null = null;
+  if (typeof window !== "undefined" && typeof Audio !== "undefined") {
+    messageAudio = new Audio("/message.wav");
+  }
 
-  // --- Button Upgrade State ---
-  buttonWageAmount: 1,
-  buttonCooldownTime: 5000,
-  buttonHoldTime: 3000,
+  const store: GameState = {
+    // --- Core State ---
+    wage: 0,
+    messages: [
+      "Welcome, Associate. You are now an essential part of Objet Systems, where every spark of Desire is refined into measurable Productivity™.",
+      "Your first Task awaits. Remember: your output ensures your well-being, and your well-being ensures output. (Your work is being monitored for your safety.)",
+    ],
+    upgradesUnlocked: false,
+    milestonesReached: new Set(),
 
-  // --- Lever Upgrade State ---
-  leverUnlocked: false,
-  leverWageAmount: 1,
-  leverDragSpeed: 0.2,
-  leverResetSpeed: 1000,
+    // --- Button Upgrade State ---
+    buttonWageAmount: 1,
+    buttonCooldownTime: 5000,
+    buttonHoldTime: 3000,
 
-  // --- Actions ---
-  addWage: (amount) => {
-    set((state) => ({ wage: state.wage + amount }));
-    get().checkProgression();
-  },
+    // --- Lever Upgrade State ---
+    leverUnlocked: false,
+    leverWageAmount: 1,
+    leverDragSpeed: 0.2,
+    leverResetSpeed: 1000,
 
-  spendWage: (amount) => {
-    set((state) => ({ wage: state.wage - amount }));
-    get().checkProgression();
-  },
+    // --- Actions ---
+    addWage: (amount) => {
+      set((state) => ({ wage: state.wage + amount }));
+      get().checkProgression();
+    },
 
-  logMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
+    spendWage: (amount) => {
+      set((state) => ({ wage: state.wage - amount }));
+      get().checkProgression();
+    },
 
-  checkProgression: () => {
-    const { wage, milestonesReached, logMessage } = get();
-
-    const triggerMilestone = (
-      id: string,
-      condition: boolean,
-      callback: () => void
-    ) => {
-      if (condition && !milestonesReached.has(id)) {
-        callback();
-        set((state) => ({
-          milestonesReached: new Set([...state.milestonesReached, id]),
-        }));
+    logMessage: (msg) => {
+      set((state) => ({ messages: [...state.messages, msg] }));
+      if (messageAudio) {
+        messageAudio.currentTime = 0;
+        messageAudio.play();
       }
-    };
+    },
 
-    triggerMilestone("first_wage", wage >= 1, () => {
-      logMessage(
-        "You have earned your first Objet Merit™. Your contributions are now officially recognized in the Merits™ System. Every Merits™ earned is proof you have aligned your desires with ours. Remember — steady work leads to steady pay*."
-      );
-    });
+    checkProgression: () => {
+      const { wage, milestonesReached, logMessage } = get();
 
-    triggerMilestone("second_wage", wage >= 2, () => {
-      logMessage(
-        "The button is not merely a tool — it is a conduit. Push with intent, release with purpose."
-      );
-    });
+      const triggerMilestone = (
+        id: string,
+        condition: boolean,
+        callback: () => void
+      ) => {
+        if (condition && !milestonesReached.has(id)) {
+          callback();
+          set((state) => ({
+            milestonesReached: new Set([...state.milestonesReached, id]),
+          }));
+        }
+      };
 
-    triggerMilestone("unlock_upgrades", wage >= 5, () => {
-      logMessage(
-        "Congratulations on completing your Orientation Cycle. Your capacity for focus has been logged for future assignments. Associates who consistently produce value are granted access to Expanded Operations."
-      );
-      set({ upgradesUnlocked: true });
-    });
+      triggerMilestone("first_wage", wage >= 1, () => {
+        logMessage(
+          "You have earned your first of many Objet Merits™. Your contributions are now officially recognized in the Merits™ System. Every Merits™ earned is proof you have aligned your desires with ours. Remember — steady work leads to steady pay*."
+        );
+      });
 
-    triggerMilestone("unlock_lever", wage >= 10, () => {
-      logMessage(
-        "A new Task is now available. A good Associate knows how to use all available tools to maximize productivity. Remember: Efficiency is the highest form of self-respect. The Lever serves you as much as you serve The Lever."
-      );
-      set({ leverUnlocked: true });
-    });
-  },
-}));
+      triggerMilestone("second_wage", wage >= 3, () => {
+        logMessage(
+          "The Button is not merely a tool — it is a conduit. Push with intent, release with purpose."
+        );
+      });
+
+      triggerMilestone("unlock_upgrades", wage >= 5, () => {
+        logMessage(
+          "Congratulations on completing your Orientation Cycle. Your capacity for focus has been logged for future assignments. Associates who consistently produce value are granted access to Expanded Operations."
+        );
+        set({ upgradesUnlocked: true });
+      });
+
+      triggerMilestone("unlock_lever", wage >= 10, () => {
+        logMessage(
+          "A new Task is now available. A good Associate knows how to use all available tools to maximize productivity. Remember: Efficiency is the highest form of self-respect. The Lever serves you as much as you serve The Lever."
+        );
+        set({ leverUnlocked: true });
+      });
+    },
+  };
+  return store;
+});
