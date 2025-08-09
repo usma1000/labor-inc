@@ -21,6 +21,8 @@ export default function Button() {
 
   // Store access
   const addWage = useGameStore((state) => state.increaseWage);
+  const wage = useGameStore((state) => state.wage);
+  const addLogMessage = useGameStore((state) => state.addLogMessage);
 
   /**
    * Clears all active timers and intervals
@@ -45,6 +47,12 @@ export default function Button() {
    */
   const startCooldown = () => {
     setCooldown(true);
+    // If this is the first dollar earned, add log message
+    if (wage < 1) {
+      addLogMessage(
+        "You have proven that you can do basic tasks. Keep going. Remember — steady work leads to steady pay."
+      );
+    }
     addWage(WAGE_AMOUNT);
 
     // Configure flashing lights

@@ -16,10 +16,9 @@ export default function App() {
         <Button />
       </div>
       <Console>
-        <p>Welcome to your new job.</p>
-        <p>
-          <strong>Your first task:</strong> hold the button to start working.
-        </p>
+        {useGameStore((state) => state.log).map((msg, i) => (
+          <p key={i}>{msg}</p>
+        ))}
       </Console>
     </div>
   );
