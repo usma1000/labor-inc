@@ -26,6 +26,11 @@
   );
 }
 
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  @apply opacity-60 cursor-not-allowed hover:shadow-sm;
+}
+
 .panel {
   @apply bg-beige text-ink rounded-lg shadow-sm shadow-darkstone p-6 border-t-1 border-screen;
 }

@@ -144,11 +144,6 @@ export default function Button() {
         onPointerLeave={handlePointerUp}
         onPointerCancel={handlePointerUp}
         disabled={cooldown}
-        style={{
-          opacity: cooldown ? 0.6 : 1,
-          pointerEvents: cooldown ? "none" : undefined,
-          transform: cooldown ? "scale(0.975)" : undefined,
-        }}
       >
         <div
           className={`relative z-[1] rounded-[inherit] shadow-[0_0.12em_0.12em_-0.02em_rgba(5,5,5,1),0_0.02em_0.02em_-0.01em_rgba(5,5,5,0.5),0.22em_0.4em_0.18em_-0.01em_rgba(5,5,5,0.28)] transition-shadow duration-300 will-change-[box-shadow] active:shadow-none ${buttonShadowClass}`}

@@ -3,10 +3,10 @@ import Console from "./components/console";
 import Button from "./components/button";
 import { useGameStore } from "./store";
 import Lever from "./components/lever";
+import Footer from "./components/footer";
 
 export default function App() {
   const wage = useGameStore((state) => state.wage);
-  const messages = useGameStore((state) => state.messages);
   const upgradesUnlocked = useGameStore((state) => state.upgradesUnlocked);
   const leverUnlocked = useGameStore((state) => state.leverUnlocked);
 
@@ -21,8 +21,6 @@ export default function App() {
               <p>Merits™: ${wage.toFixed(2)}</p>
             </Console>
           </div>
-
-          {upgradesUnlocked && <button className="btn ml-6">Upgrade</button>}
         </div>
         <div className="flex justify-center gap-6">
           <div className="panel">
@@ -37,13 +35,7 @@ export default function App() {
         </div>
       </div>
 
-      <Console>
-        {messages.map((msg, i) => (
-          <p className="mb-2" key={i}>
-            {msg}
-          </p>
-        ))}
-      </Console>
+      <Footer />
     </div>
   );
 }
