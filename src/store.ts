@@ -45,7 +45,7 @@ export const useGameStore = create<GameState>((set, get) => {
   // Audio for message notification
   let messageAudio: HTMLAudioElement | null = null;
   if (typeof window !== "undefined" && typeof Audio !== "undefined") {
-    messageAudio = new Audio("/message.wav");
+    messageAudio = new Audio("message.wav");
   }
 
   const upgradesInit = groupUpgradesByTool(allUpgrades);

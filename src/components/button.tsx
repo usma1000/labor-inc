@@ -26,10 +26,14 @@ export default function Button() {
   const buttonHoldTime = useGameStore((state) => state.buttonHoldTime);
   const addWage = useGameStore((state) => state.addWage);
 
-  // Initialize audio elements once
-  useEffect(() => {
-    depressSoundRef.current = new Audio("/button-depress.wav");
-  }, []);
+  // Initialize audio elements once, but only after user interaction
+  const initializeAudio = () => {
+    if (!depressSoundRef.current) {
+      depressSoundRef.current = new Audio("button-depress.wav");
+      // Pre-load the audio
+      depressSoundRef.current.load();
+    }
+  };
 
   /**
    * Clears all active timers and intervals
@@ -73,7 +77,9 @@ export default function Button() {
       // Play depress sound after cooldown ends
       if (depressSoundRef.current) {
         depressSoundRef.current.currentTime = 0;
-        depressSoundRef.current.play();
+        depressSoundRef.current.play().catch(() => {
+          // Silently handle play() promise rejection
+        });
       }
     }, buttonCooldownTime);
   };
@@ -82,10 +88,16 @@ export default function Button() {
     // Don't do anything if already in progress or cooldown
     if (intervalRef.current || cooldown) return;
 
+    // Initialize audio on first interaction
+    initializeAudio();
+
     // Play depress sound on press
     if (depressSoundRef.current) {
       depressSoundRef.current.currentTime = 0;
-      depressSoundRef.current.play();
+      depressSoundRef.current.play().catch(() => {
+        // Silently handle play() promise rejection
+        // This can happen on some mobile browsers
+      });
     }
 
     // Start with first light
