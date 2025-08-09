@@ -73,6 +73,11 @@
 }
 
 .sticker {
-  @apply px-3 py-1 text-xs font-bold text-ink bg-screen rounded-2xl uppercase shadow-sm;
+  @apply px-3 py-1 text-xs font-bold text-ink bg-screen uppercase rounded-2xl;
+  border: 1px solid #313130;
+}
+
+.sticker-vertical {
+  @apply px-3 py-1 text-xs font-bold text-ink bg-screen uppercase transform rotate-90 rounded-2xl;
   border: 1px solid #313130;
 }

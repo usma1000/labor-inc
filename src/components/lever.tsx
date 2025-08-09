@@ -14,18 +14,18 @@ export default function Lever() {
   const isDraggingRef = useRef(false);
   const animationFrameRef = useRef<number | undefined>(undefined);
   const lastUpdateTimeRef = useRef(0);
-  const targetYRef = useRef(0);
-  const currentYRef = useRef(0);
+  const targetXRef = useRef(0);
+  const currentXRef = useRef(0);
 
   // State
   const [isInCooldown, setIsInCooldown] = useState(false);
   const [lightColor, setLightColor] = useState<StatusLightColor>("inactive");
 
   // Track dimensions
-  const TRACK_HEIGHT = 160;
+  const TRACK_WIDTH = 160;
   const HANDLE_RADIUS = 30;
-  const TRACK_WIDTH = 30;
-  const MAX_Y = TRACK_HEIGHT - HANDLE_RADIUS;
+  const TRACK_HEIGHT = 30;
+  const MAX_X = TRACK_WIDTH - HANDLE_RADIUS;
 
   const updateHandlePosition = useCallback(() => {
     if (!handleRef.current || !isDraggingRef.current) return;
@@ -38,15 +38,15 @@ export default function Lever() {
     const maxMove = leverDragSpeed * deltaTime;
 
     // Calculate distance to target
-    const diff = targetYRef.current - currentYRef.current;
+    const diff = targetXRef.current - currentXRef.current;
     // Move handle toward target, but only up to maxMove
     const move = Math.min(Math.abs(diff), maxMove) * Math.sign(diff);
 
-    currentYRef.current += move;
-    handleRef.current.style.transform = `translateY(${currentYRef.current}px)`;
+    currentXRef.current += move;
+    handleRef.current.style.transform = `translateX(${currentXRef.current}px)`;
 
     // Update light color based on position
-    if (currentYRef.current >= MAX_Y * 0.95) {
+    if (currentXRef.current >= MAX_X * 0.95) {
       setLightColor("green");
     } else {
       setLightColor("inactive");
@@ -56,7 +56,7 @@ export default function Lever() {
     if (isDraggingRef.current) {
       animationFrameRef.current = requestAnimationFrame(updateHandlePosition);
     }
-  }, [leverDragSpeed, MAX_Y]);
+  }, [leverDragSpeed, MAX_X]);
 
   const startResetAnimation = useCallback(() => {
     isDraggingRef.current = false;
@@ -68,9 +68,9 @@ export default function Lever() {
 
     if (handleRef.current) {
       handleRef.current.style.transition = `transform ${leverResetSpeed}ms ease-in-out`;
-      handleRef.current.style.transform = "translateY(0px)";
-      currentYRef.current = 0;
-      targetYRef.current = 0;
+      handleRef.current.style.transform = "translateX(0px)";
+      currentXRef.current = 0;
+      targetXRef.current = 0;
 
       setTimeout(() => {
         if (handleRef.current) {
@@ -101,11 +101,11 @@ export default function Lever() {
     lastUpdateTimeRef.current = performance.now();
 
     const trackRect = track.getBoundingClientRect();
-    const y = Math.max(
+    const x = Math.max(
       0,
-      Math.min(MAX_Y, e.clientY - trackRect.top - HANDLE_RADIUS / 2)
+      Math.min(MAX_X, e.clientX - trackRect.left - HANDLE_RADIUS / 2)
     );
-    targetYRef.current = y;
+    targetXRef.current = x;
 
     animationFrameRef.current = requestAnimationFrame(updateHandlePosition);
 
@@ -119,26 +119,26 @@ export default function Lever() {
       if (!isDraggingRef.current || !trackRef.current) return;
 
       const trackRect = trackRef.current.getBoundingClientRect();
-      const y = Math.max(
+      const x = Math.max(
         0,
-        Math.min(MAX_Y, e.clientY - trackRect.top - HANDLE_RADIUS / 2)
+        Math.min(MAX_X, e.clientX - trackRect.left - HANDLE_RADIUS / 2)
       );
-      targetYRef.current = y;
+      targetXRef.current = x;
     },
-    [MAX_Y]
+    [MAX_X]
   );
 
   const handlePointerUp = useCallback(() => {
     document.removeEventListener("pointermove", handlePointerMove);
     document.removeEventListener("pointerup", handlePointerUp);
 
-    // Award merits if handle is near bottom
-    if (currentYRef.current >= MAX_Y * 0.95) {
+    // Award merits if handle is near right end
+    if (currentXRef.current >= MAX_X * 0.95) {
       addWage(leverWageAmount);
     }
 
     startResetAnimation();
-  }, [addWage, leverWageAmount, handlePointerMove, startResetAnimation, MAX_Y]);
+  }, [addWage, leverWageAmount, handlePointerMove, startResetAnimation, MAX_X]);
 
   return (
     <div className="flex flex-col items-center gap-3">
@@ -156,29 +156,29 @@ export default function Lever() {
           }}
         >
           {/* Tick marks */}
-          <div className="absolute -right-3 top-0 h-full flex flex-col justify-between py-4">
+          <div className="absolute -bottom-3 left-0 w-full flex flex-row justify-between px-4">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="w-2 h-[1px] bg-stone" />
+              <div key={i} className="h-2 w-[1px] bg-stone" />
             ))}
           </div>
 
-          {/* Bottom highlight */}
+          {/* Right highlight */}
           <div
-            className="absolute left-0 bottom-0 w-full"
+            className="absolute right-0 top-0 h-full"
             style={{
-              height: "1px",
+              width: "1px",
               background: "rgba(255, 255, 255, 0.15)",
             }}
           />
 
           {/* Groove effect */}
           <div
-            className="absolute left-1/2 bg-stone-600 rounded-2xl"
+            className="absolute top-1/2 bg-stone-600 rounded-2xl"
             style={{
-              width: "6px",
-              height: TRACK_HEIGHT - HANDLE_RADIUS,
-              top: HANDLE_RADIUS / 2,
-              transform: "translateX(-50%)",
+              height: "6px",
+              width: TRACK_WIDTH - HANDLE_RADIUS,
+              left: HANDLE_RADIUS / 2,
+              transform: "translateY(-50%)",
               boxShadow: "inset 0 0 4px rgba(0, 0, 0, 0.5)",
             }}
           />
@@ -203,7 +203,7 @@ export default function Lever() {
               userSelect: "none",
               touchAction: "none",
             }}
-            className="rounded-full z-10"
+            className="rounded-full"
           />
         </div>
       </div>

@@ -55,10 +55,14 @@ export default function App() {
             </div>
             <div
               className={`absolute inset-0 bg-beige transition-transform duration-500 ${
-                leverUnlocked ? "-translate-y-full" : ""
+                leverUnlocked ? "-translate-y-9/12" : ""
               }`}
             >
-              <div className="absolute inset-0 z-10 warning-stripes" />
+              <div className="absolute inset-0 z-10 warning-stripes">
+                <div className="absolute left-1/2 bottom-4 -translate-x-1/2">
+                  <div className="sticker">Lever</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
