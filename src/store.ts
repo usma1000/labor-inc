@@ -45,7 +45,9 @@ export const useGameStore = create<GameState>((set, get) => {
   // Audio for message notification
   let messageAudio: HTMLAudioElement | null = null;
   if (typeof window !== "undefined" && typeof Audio !== "undefined") {
-    messageAudio = new Audio("/labor-inc/message.wav");
+    const basePath =
+      window.location.hostname === "localhost" ? "" : "/labor-inc";
+    messageAudio = new Audio(`${basePath}/message.wav`);
   }
 
   const upgradesInit = groupUpgradesByTool(allUpgrades);
@@ -188,7 +190,9 @@ export const useGameStore = create<GameState>((set, get) => {
       set((state) => ({ messages: [...state.messages, msg] }));
       if (messageAudio) {
         messageAudio.currentTime = 0;
-        messageAudio.play();
+        messageAudio.play().catch(() => {
+          // Silently handle play() promise rejection
+        });
       }
     },
 
