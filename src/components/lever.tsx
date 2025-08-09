@@ -22,7 +22,7 @@ export default function Lever() {
   const [lightColor, setLightColor] = useState<StatusLightColor>("inactive");
 
   // Track dimensions
-  const TRACK_WIDTH = 160;
+  const TRACK_WIDTH = 320;
   const HANDLE_RADIUS = 30;
   const TRACK_HEIGHT = 30;
   const MAX_X = TRACK_WIDTH - HANDLE_RADIUS;
