@@ -4,17 +4,21 @@ import Button from "./components/button";
 import { useGameStore } from "./store";
 import Lever from "./components/lever";
 import Footer from "./components/footer";
+import UpgradesDialog from "./components/upgrades-dialog";
+import { useState } from "react";
 
 export default function App() {
   const wage = useGameStore((state) => state.wage);
   const leverUnlocked = useGameStore((state) => state.leverUnlocked);
+  const upgradesUnlocked = useGameStore((state) => state.upgradesUnlocked);
+  const [showUpgrades, setShowUpgrades] = useState(false);
 
   return (
     <div className="space-y-4 p-2 w-full min-h-screen flex flex-col justify-between font-mono">
       <Header />
 
       <div className="flex flex-col items-center space-y-4">
-        <div className="flex justify-center">
+        <div className="flex justify-center flex-wrap gap-4">
           <div className="panel">
             <Console recessed height="auto" minWidth="200px">
               <div className="flex justify-between items-baseline">
@@ -23,6 +27,17 @@ export default function App() {
               </div>
             </Console>
           </div>
+          <UpgradesDialog
+            isOpen={showUpgrades}
+            onOpenChange={setShowUpgrades}
+          />
+          <button
+            className="btn"
+            disabled={!upgradesUnlocked}
+            onClick={() => setShowUpgrades(true)}
+          >
+            Expanded Operations
+          </button>
         </div>
         <div className="flex justify-center gap-6">
           <div className="panel">
