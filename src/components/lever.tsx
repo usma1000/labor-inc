@@ -16,6 +16,8 @@ export default function Lever() {
   const lastUpdateTimeRef = useRef(0);
   const targetXRef = useRef(0);
   const currentXRef = useRef(0);
+  const leverFullSoundRef = useRef<HTMLAudioElement | null>(null);
+  const leverResetSoundRef = useRef<HTMLAudioElement | null>(null);
 
   // State
   const [isInCooldown, setIsInCooldown] = useState(false);
@@ -73,6 +75,14 @@ export default function Lever() {
       targetXRef.current = 0;
 
       setTimeout(() => {
+        // Play reset sound when lever reaches start position
+        if (leverResetSoundRef.current) {
+          leverResetSoundRef.current.currentTime = 0;
+          leverResetSoundRef.current.play().catch(() => {
+            // Silently handle play() promise rejection
+          });
+        }
+
         if (handleRef.current) {
           handleRef.current.style.transition = "";
         }
@@ -82,8 +92,13 @@ export default function Lever() {
     }
   }, [leverResetSpeed]);
 
-  // Cleanup animation frame on unmount
+  // Initialize audio and handle cleanup
   useEffect(() => {
+    const basePath =
+      window.location.hostname === "localhost" ? "" : "/labor-inc";
+    leverFullSoundRef.current = new Audio(`${basePath}/lever-full.wav`);
+    leverResetSoundRef.current = new Audio(`${basePath}/lever-reset.wav`);
+
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
@@ -135,6 +150,13 @@ export default function Lever() {
     // Award merits if handle is near right end
     if (currentXRef.current >= MAX_X * 0.95) {
       addWage(leverWageAmount);
+      // Play full lever sound
+      if (leverFullSoundRef.current) {
+        leverFullSoundRef.current.currentTime = 0;
+        leverFullSoundRef.current.play().catch(() => {
+          // Silently handle play() promise rejection
+        });
+      }
     }
 
     startResetAnimation();
