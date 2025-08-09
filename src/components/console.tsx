@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 /**
  * Props for the Console component
  */
@@ -7,7 +7,7 @@ interface ConsoleProps {
   children: React.ReactNode;
   /** Controls padding of the middle layer: 'p-6' (default) or 'p-2' for small mode */
   padding?: "p-6" | "p-2";
-  /** When true, hides only the outermost layer of the console */
+  /** When true, hides only the outermost layer of the console. If undefined, will be responsive. */
   recessed?: boolean;
   /** Controls height of the content area: 'h-32' (fixed, default) or 'auto' */
   height?: "h-32" | "auto";
@@ -22,10 +22,27 @@ export default function Console(props: ConsoleProps) {
   const {
     children,
     padding = "p-5",
-    recessed = false,
+    recessed: recessedProp,
     height = "h-32",
     minWidth,
   } = props;
+
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    setIsSmallScreen(mediaQuery.matches);
+
+    const handleResize = (e: MediaQueryListEvent) => {
+      setIsSmallScreen(e.matches);
+    };
+
+    mediaQuery.addEventListener("change", handleResize);
+    return () => mediaQuery.removeEventListener("change", handleResize);
+  }, []);
+
+  // Use the prop if provided, otherwise use responsive behavior
+  const recessed = recessedProp ?? isSmallScreen;
 
   // Convert height prop to actual class name
   const heightClass = height === "auto" ? "" : height;
