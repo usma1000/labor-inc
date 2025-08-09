@@ -1,3 +1,4 @@
+import React, { useRef, useEffect } from "react";
 /**
  * Props for the Console component
  */
@@ -29,6 +30,16 @@ export default function Console(props: ConsoleProps) {
   // Convert height prop to actual class name
   const heightClass = height === "auto" ? "" : height;
 
+  // Ref for the scrollable content
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to bottom when children change
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [children]);
+
   /**
    * Renders the inner screen with content
    */
@@ -38,6 +49,7 @@ export default function Console(props: ConsoleProps) {
       style={minWidth ? { minWidth } : undefined}
     >
       <div
+        ref={scrollRef}
         className={`bg-screen py-2 px-4 rounded-md shadow-inner shadow-gray-500 leading-loose overflow-y-auto ${heightClass}`}
       >
         {children}
