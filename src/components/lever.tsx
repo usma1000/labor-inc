@@ -45,11 +45,18 @@ export default function Lever() {
     currentYRef.current += move;
     handleRef.current.style.transform = `translateY(${currentYRef.current}px)`;
 
+    // Update light color based on position
+    if (currentYRef.current >= MAX_Y * 0.95) {
+      setLightColor("green");
+    } else {
+      setLightColor("inactive");
+    }
+
     // Continue animation if still dragging
     if (isDraggingRef.current) {
       animationFrameRef.current = requestAnimationFrame(updateHandlePosition);
     }
-  }, [leverDragSpeed]);
+  }, [leverDragSpeed, MAX_Y]);
 
   const startResetAnimation = useCallback(() => {
     isDraggingRef.current = false;
@@ -70,6 +77,7 @@ export default function Lever() {
           handleRef.current.style.transition = "";
         }
         setIsInCooldown(false);
+        setLightColor("inactive");
       }, leverResetSpeed);
     }
   }, [leverResetSpeed]);
@@ -120,21 +128,17 @@ export default function Lever() {
     [MAX_Y]
   );
 
-  const handlePointerUp = useCallback(
-    (e: PointerEvent) => {
-      document.removeEventListener("pointermove", handlePointerMove);
-      document.removeEventListener("pointerup", handlePointerUp);
+  const handlePointerUp = useCallback(() => {
+    document.removeEventListener("pointermove", handlePointerMove);
+    document.removeEventListener("pointerup", handlePointerUp);
 
-      // Award merits if handle is near bottom
-      if (currentYRef.current >= MAX_Y * 0.95) {
-        addWage(leverWageAmount);
-        setLightColor("green");
-      }
+    // Award merits if handle is near bottom
+    if (currentYRef.current >= MAX_Y * 0.95) {
+      addWage(leverWageAmount);
+    }
 
-      startResetAnimation();
-    },
-    [addWage, leverWageAmount, handlePointerMove, startResetAnimation, MAX_Y]
-  );
+    startResetAnimation();
+  }, [addWage, leverWageAmount, handlePointerMove, startResetAnimation, MAX_Y]);
 
   return (
     <div className="flex flex-col items-center gap-3">
