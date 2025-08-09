@@ -12,6 +12,12 @@ type GameState = {
   buttonCooldownTime: number; // Cooldown time (ms) after button is pressed
   buttonHoldTime: number; // Time (ms) required to hold button
 
+  // --- Lever Upgrade State ---
+  leverUnlocked: boolean; // Whether lever upgrades are available
+  leverWageAmount: number; // Amount earned per lever pull
+  leverDragSpeed: number; // Speed of lever drag (px/ms)
+  leverResetSpeed: number; // Speed of lever reset (px/ms)
+
   // --- Actions ---
   addWage: (amount: number) => void; // Add to wage and check progression
   spendWage: (amount: number) => void; // Subtract from wage and check progression
@@ -33,6 +39,12 @@ export const useGameStore = create<GameState>((set, get) => ({
   buttonWageAmount: 1,
   buttonCooldownTime: 5000,
   buttonHoldTime: 3000,
+
+  // --- Lever Upgrade State ---
+  leverUnlocked: false,
+  leverWageAmount: 1,
+  leverDragSpeed: 100,
+  leverResetSpeed: 1000,
 
   // --- Actions ---
   addWage: (amount) => {
@@ -63,17 +75,24 @@ export const useGameStore = create<GameState>((set, get) => ({
       }
     };
 
-    triggerMilestone("wage_1", wage >= 1, () => {
+    triggerMilestone("first_wage", wage >= 1, () => {
       logMessage(
         "You have proven that you can do basic tasks. Keep going. Remember — steady work leads to steady pay."
       );
     });
 
-    triggerMilestone("wage_5", wage >= 2, () => {
+    triggerMilestone("unlock_upgrades", wage >= 2, () => {
       logMessage(
         "Upgrades are now available for purchase. Use your own wage to buy them."
       );
       set({ upgradesUnlocked: true });
+    });
+
+    triggerMilestone("lever_unlock", wage >= 3, () => {
+      logMessage(
+        "Lever upgrades are now available. A good employee knows how to use all available tools to maximize productivity."
+      );
+      set({ leverUnlocked: true });
     });
   },
 }));
