@@ -4,6 +4,7 @@ type GameState = {
   // --- Core State ---
   wage: number;
   messages: string[];
+  lastWageEarned: Date | null; // Track last wage earned time
   upgradesUnlocked: boolean;
   milestonesReached: Set<string>; // Tracks which milestones have been triggered
 
@@ -39,6 +40,7 @@ export const useGameStore = create<GameState>((set, get) => {
       "Welcome, Associate. You are now an essential part of Objet Systems, where every spark of Desire is refined into measurable Productivity™.",
       "Your first Task awaits. Remember: your output ensures your well-being, and your well-being ensures output. (Your work is being monitored for your safety.)",
     ],
+    lastWageEarned: null,
     upgradesUnlocked: false,
     milestonesReached: new Set(),
 
@@ -57,6 +59,7 @@ export const useGameStore = create<GameState>((set, get) => {
     addWage: (amount) => {
       set((state) => ({ wage: state.wage + amount }));
       get().checkProgression();
+      set({ lastWageEarned: new Date() });
     },
 
     spendWage: (amount) => {
@@ -73,7 +76,7 @@ export const useGameStore = create<GameState>((set, get) => {
     },
 
     checkProgression: () => {
-      const { wage, milestonesReached, logMessage } = get();
+      const { wage, milestonesReached, lastWageEarned, logMessage } = get();
 
       const triggerMilestone = (
         id: string,
@@ -94,7 +97,7 @@ export const useGameStore = create<GameState>((set, get) => {
         );
       });
 
-      triggerMilestone("second_wage", wage >= 3, () => {
+      triggerMilestone("third_wage", wage >= 3, () => {
         logMessage(
           "The Button is not merely a tool — it is a conduit. Push with intent, release with purpose."
         );
@@ -113,6 +116,19 @@ export const useGameStore = create<GameState>((set, get) => {
         );
         set({ leverUnlocked: true });
       });
+
+      triggerMilestone(
+        "wage_idle",
+        lastWageEarned !== null &&
+          new Date().getTime() - lastWageEarned.getTime() > 3000,
+        () => {
+          logMessage(
+            "A minor deviation in your output curve has been observed and logged. Your last Merits™ acquisition occurred at " +
+              lastWageEarned?.toLocaleTimeString() +
+              ". Every moment of idleness is a moment of lost potential."
+          );
+        }
+      );
     },
   };
   return store;

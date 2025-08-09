@@ -7,7 +7,6 @@ import Footer from "./components/footer";
 
 export default function App() {
   const wage = useGameStore((state) => state.wage);
-  const upgradesUnlocked = useGameStore((state) => state.upgradesUnlocked);
   const leverUnlocked = useGameStore((state) => state.leverUnlocked);
 
   return (
