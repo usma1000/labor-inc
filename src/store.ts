@@ -29,8 +29,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   // --- Core State ---
   wage: 0,
   messages: [
-    "Welcome to your new job.",
-    "Your first task: hold the button to start working.",
+    "Welcome, Associate, to your new job at Objet Systems where you can help shape desire into productivity™.",
+    "Please complete your first Task.Your work is being monitored for your own safety and productivity.",
   ],
   upgradesUnlocked: false,
   milestonesReached: new Set(),
@@ -77,20 +77,20 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     triggerMilestone("first_wage", wage >= 1, () => {
       logMessage(
-        "You have proven that you can do basic tasks. Keep going. Remember — steady work leads to steady pay."
+        "You have earned your first Objet Merit™. Your contributions are now officially recognized in the Merits™ System. Every Merits™ earned is proof you have aligned your desires with ours. Remember — steady work leads to steady pay*."
       );
     });
 
     triggerMilestone("unlock_upgrades", wage >= 5, () => {
       logMessage(
-        "Upgrades are now available for purchase. Use your own wage to buy them."
+        "Associates who consistently produce value will be granted access to Expanded Operations."
       );
       set({ upgradesUnlocked: true });
     });
 
     triggerMilestone("lever_unlock", wage >= 10, () => {
       logMessage(
-        "Lever upgrades are now available. A good employee knows how to use all available tools to maximize productivity."
+        "A new Task is now available. A good Associate knows how to use all available tools to maximize productivity. Remember: Efficiency is the highest form of self-respect. The Lever serves you as much as you serve The Lever."
       );
       set({ leverUnlocked: true });
     });

@@ -11,6 +11,9 @@
 
 #root {
   @apply bg-beige-dark text-ink min-h-screen flex items-center justify-center;
+  background-image: url("/noise.png");
+  background-size: 100px 100px;
+  background-blend-mode: multiply;
 }
 
 .btn {

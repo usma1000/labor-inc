@@ -50,7 +50,7 @@ export default function Console(props: ConsoleProps) {
     >
       <div
         ref={scrollRef}
-        className={`bg-screen py-2 px-4 rounded-md shadow-inner shadow-gray-500 leading-loose overflow-y-auto ${heightClass}`}
+        className={`bg-screen py-2 px-4 rounded-md shadow-inner shadow-gray-500 overflow-y-auto ${heightClass}`}
       >
         {children}
       </div>

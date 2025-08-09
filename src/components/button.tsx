@@ -17,11 +17,19 @@ export default function Button() {
   const flashIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const cooldownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Sound refs
+  const depressSoundRef = useRef<HTMLAudioElement | null>(null);
+
   // Store access
   const buttonWageAmount = useGameStore((state) => state.buttonWageAmount);
   const buttonCooldownTime = useGameStore((state) => state.buttonCooldownTime);
   const buttonHoldTime = useGameStore((state) => state.buttonHoldTime);
   const addWage = useGameStore((state) => state.addWage);
+
+  // Initialize audio elements once
+  useEffect(() => {
+    depressSoundRef.current = new Audio("/button-depress.wav");
+  }, []);
 
   /**
    * Clears all active timers and intervals
@@ -62,12 +70,23 @@ export default function Button() {
       if (flashIntervalRef.current) clearInterval(flashIntervalRef.current);
       flashIntervalRef.current = null;
       cooldownTimeoutRef.current = null;
+      // Play depress sound after cooldown ends
+      if (depressSoundRef.current) {
+        depressSoundRef.current.currentTime = 0;
+        depressSoundRef.current.play();
+      }
     }, buttonCooldownTime);
   };
 
   const handlePointerDown = () => {
     // Don't do anything if already in progress or cooldown
     if (intervalRef.current || cooldown) return;
+
+    // Play depress sound on press
+    if (depressSoundRef.current) {
+      depressSoundRef.current.currentTime = 0;
+      depressSoundRef.current.play();
+    }
 
     // Start with first light
     setLights(1);
