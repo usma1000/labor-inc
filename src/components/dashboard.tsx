@@ -9,7 +9,7 @@ export default function Dashboard() {
   const [showUpgrades, setShowUpgrades] = useState(false);
 
   return (
-    <div className="flex justify-center flex-wrap gap-4">
+    <div className="flex justify-center flex-wrap gap-4 w-full max-w-2xl">
       <div className="panel">
         <Console recessed height="auto" minWidth="200px">
           <div className="flex justify-between items-baseline">

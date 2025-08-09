@@ -6,9 +6,9 @@ export default function Controls() {
   const leverUnlocked = useGameStore((state) => state.leverUnlocked);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full max-w-2xl">
       <div className="flex justify-center gap-4">
-        <div className="panel relative">
+        <div className="panel relative flex-1">
           <Button />
           <div className="absolute inset-x-0 bottom-0 h-8 warning-stripes">
             <div className="absolute left-1/2 -translate-x-1/2 bottom-0.5">
@@ -16,7 +16,7 @@ export default function Controls() {
             </div>
           </div>
         </div>
-        <div className="panel relative min-w-48">
+        <div className="panel relative flex-1">
           {/* knob will go here */}
           <div className="absolute inset-x-0 top-0 bottom-0 warning-stripes">
             <div className="absolute left-1/2 -translate-x-1/2 bottom-0.5">
