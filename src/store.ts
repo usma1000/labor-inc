@@ -160,7 +160,7 @@ export const useGameStore = create<GameState>((set, get) => {
         },
         dragSpeed: {
           ...get().dragSpeed,
-          [tool]: upgrades[tool].dragSpeed
+          [tool]: upgrades[tool].dragSpeed?.currentEffect !== undefined
             ? (upgrades[tool].dragSpeed.currentEffect as number)
             : tool === "lever"
             ? 0.1

@@ -102,9 +102,9 @@ export default function Lever() {
     const basePath =
       window.location.hostname === "localhost" ? "" : "/labor-inc";
     leverFullSoundRef.current = new Audio(`${basePath}/lever-full.wav`);
-    leverFullSoundRef.current.volume = 0.5;
+    leverFullSoundRef.current.volume = 0.25;
     leverResetSoundRef.current = new Audio(`${basePath}/lever-reset.wav`);
-    leverResetSoundRef.current.volume = 0.5;
+    leverResetSoundRef.current.volume = 0.25;
 
     return () => {
       if (animationFrameRef.current) {
