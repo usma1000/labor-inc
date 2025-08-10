@@ -65,19 +65,13 @@
 .warning-stripes {
   background-image: repeating-linear-gradient(
     -45deg,
-    #313130 0,
-    #313130 10px,
-    #f8cf30 10px,
-    #f8cf30 20px
+    rgba(49, 49, 48, 0.25) 0,
+    rgba(49, 49, 48, 0.25) 10px,
+    rgba(248, 207, 48, 0.25) 10px,
+    rgba(248, 207, 48, 0.25) 20px
   );
 }
 
 .sticker {
-  @apply px-3 py-1 text-xs font-bold text-ink bg-screen uppercase rounded-2xl;
-  border: 1px solid #313130;
-}
-
-.sticker-vertical {
-  @apply px-3 py-1 text-xs font-bold text-ink bg-screen uppercase transform rotate-90 rounded-2xl;
-  border: 1px solid #313130;
+  @apply px-3 py-0.5 text-xs font-bold text-ink bg-beige uppercase rounded-2xl border-1 border-darkstone;
 }

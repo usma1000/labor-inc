@@ -172,8 +172,8 @@ export const useGameStore = create<GameState>((set, get) => {
     // --- Lever Upgrade State ---
     leverUnlocked: false,
     leverWageAmount: 1,
-    leverDragSpeed: 0.05,
-    leverResetSpeed: 5000,
+    leverDragSpeed: 0.1,
+    leverResetSpeed: 10000,
 
     // --- Actions ---
     addWage: (amount) => {
