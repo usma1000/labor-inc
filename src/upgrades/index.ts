@@ -1,6 +1,4 @@
 import { buttonUpgrades } from "./upgrades-button";
+import { leverUpgrades } from "./upgrades-lever";
 
-export const allUpgrades = [
-  ...buttonUpgrades,
-  // Add other tool upgrades here later
-];
+export const allUpgrades = [...buttonUpgrades, ...leverUpgrades];
