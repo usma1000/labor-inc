@@ -3,9 +3,9 @@ import { useGameStore } from "../store";
 import StatusLight, { type StatusLightColor } from "./status-light";
 
 export default function Lever() {
-  const leverDragSpeed = useGameStore((state) => state.leverDragSpeed);
-  const leverResetSpeed = useGameStore((state) => state.leverResetSpeed);
-  const leverWageAmount = useGameStore((state) => state.leverWageAmount);
+  const holdSpeed = useGameStore((state) => state.holdTime.lever);
+  const resetSpeed = useGameStore((state) => state.cooldownTime.lever * 1000); // Convert to ms
+  const wageAmount = useGameStore((state) => state.meritYield.lever);
   const addWage = useGameStore((state) => state.addWage);
 
   // Refs
@@ -37,7 +37,7 @@ export default function Lever() {
     lastUpdateTimeRef.current = now;
 
     // Calculate max distance the handle can move this frame
-    const maxMove = leverDragSpeed * deltaTime;
+    const maxMove = holdSpeed * deltaTime;
 
     // Calculate distance to target
     const diff = targetXRef.current - currentXRef.current;
@@ -58,7 +58,7 @@ export default function Lever() {
     if (isDraggingRef.current) {
       animationFrameRef.current = requestAnimationFrame(updateHandlePosition);
     }
-  }, [leverDragSpeed, MAX_X]);
+  }, [holdSpeed, MAX_X]);
 
   const startResetAnimation = useCallback(() => {
     isDraggingRef.current = false;
@@ -69,7 +69,7 @@ export default function Lever() {
     setLightColor("yellow");
 
     if (handleRef.current) {
-      handleRef.current.style.transition = `transform ${leverResetSpeed}ms ease-in-out`;
+      handleRef.current.style.transition = `transform ${resetSpeed}ms ease-in-out`;
       handleRef.current.style.transform = "translateX(0px)";
       currentXRef.current = 0;
       targetXRef.current = 0;
@@ -88,9 +88,9 @@ export default function Lever() {
         }
         setIsInCooldown(false);
         setLightColor("inactive");
-      }, leverResetSpeed);
+      }, resetSpeed);
     }
-  }, [leverResetSpeed]);
+  }, [resetSpeed]);
 
   // Initialize audio and handle cleanup
   useEffect(() => {
@@ -151,7 +151,7 @@ export default function Lever() {
 
     // Award merits if handle is near right end
     if (currentXRef.current >= MAX_X * 0.95) {
-      addWage(leverWageAmount);
+      addWage(wageAmount);
       // Play full lever sound
       if (leverFullSoundRef.current) {
         leverFullSoundRef.current.currentTime = 0;
@@ -162,7 +162,7 @@ export default function Lever() {
     }
 
     startResetAnimation();
-  }, [addWage, leverWageAmount, handlePointerMove, startResetAnimation, MAX_X]);
+  }, [addWage, wageAmount, handlePointerMove, startResetAnimation, MAX_X]);
 
   return (
     <div className="flex flex-col items-center">

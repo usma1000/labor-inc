@@ -50,16 +50,8 @@ export type GameState = {
   autoPressEnabled: Record<ToolName, boolean>;
   purchaseUpgrade: (tool: ToolName, upgradeId: string) => void;
 
-  // --- Button Upgrade State ---
-  buttonWageAmount: number; // Amount earned per button press
-  buttonCooldownTime: number; // Cooldown time (ms) after button is pressed
-  buttonHoldTime: number; // Time (ms) required to hold button
-
-  // --- Lever Upgrade State ---
-  leverUnlocked: boolean; // Whether lever upgrades are available
-  leverWageAmount: number; // Amount earned per lever pull
-  leverDragSpeed: number; // Speed of lever drag (px/ms)
-  leverResetSpeed: number; // Speed of lever reset (px/ms)
+  // --- Tool Availability ---
+  leverUnlocked: boolean; // Whether the lever tool is available to use
 
   // --- Actions ---
   addWage: (amount: number) => void; // Add to wage and check progression

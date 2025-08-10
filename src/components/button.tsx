@@ -22,8 +22,10 @@ export default function Button() {
 
   // Store access
   const meritYield = useGameStore((state) => state.meritYield.button);
-  const buttonCooldownTime = useGameStore((state) => state.buttonCooldownTime);
-  const buttonHoldTime = useGameStore((state) => state.buttonHoldTime);
+  const cooldownTime = useGameStore(
+    (state) => state.cooldownTime.button * 1000
+  ); // Convert to ms
+  const holdTime = useGameStore((state) => state.holdTime.button * 1000); // Convert to ms
   const addWage = useGameStore((state) => state.addWage);
 
   // Initialize audio elements once, but only after user interaction
@@ -83,7 +85,7 @@ export default function Button() {
           // Silently handle play() promise rejection
         });
       }
-    }, buttonCooldownTime);
+    }, cooldownTime);
   };
 
   const handlePointerDown = () => {
@@ -116,7 +118,7 @@ export default function Button() {
         clearAllTimers();
         startCooldown();
       }
-    }, buttonHoldTime / LIGHT_COUNT);
+    }, holdTime / LIGHT_COUNT);
   };
 
   const handlePointerUp = () => {

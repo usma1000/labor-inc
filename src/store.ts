@@ -164,16 +164,8 @@ export const useGameStore = create<GameState>((set, get) => {
     upgradesUnlocked: DEV_MODE,
     milestonesReached: new Set(),
 
-    // --- Button Upgrade State ---
-    buttonWageAmount: 1,
-    buttonCooldownTime: 5000,
-    buttonHoldTime: 3000,
-
-    // --- Lever Upgrade State ---
+    // --- Tool Availability ---
     leverUnlocked: false,
-    leverWageAmount: 1,
-    leverDragSpeed: 0.1,
-    leverResetSpeed: 10000,
 
     // --- Actions ---
     addWage: (amount) => {
