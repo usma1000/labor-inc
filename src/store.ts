@@ -60,6 +60,12 @@ export const useGameStore = create<GameState>((set, get) => {
     dial: (upgradesInit.dial.yield?.currentEffect as number) || 0,
   };
 
+  const dragSpeed: Record<ToolName, number> = {
+    button: 0,
+    lever: (upgradesInit.lever.dragSpeed?.currentEffect as number) || 0.1,
+    dial: 0,
+  };
+
   const holdTime: Record<ToolName, number> = {
     button: (upgradesInit.button.holdTime?.currentEffect as number) || 0,
     lever: (upgradesInit.lever.holdTime?.currentEffect as number) || 0,
@@ -81,6 +87,7 @@ export const useGameStore = create<GameState>((set, get) => {
   const store: GameState = {
     upgrades: upgradesInit,
     meritYield,
+    dragSpeed,
     holdTime,
     cooldownTime,
     autoPressEnabled,
@@ -150,6 +157,14 @@ export const useGameStore = create<GameState>((set, get) => {
           [tool]: upgrades[tool].autoPress
             ? (upgrades[tool].autoPress.currentEffect as boolean)
             : false,
+        },
+        dragSpeed: {
+          ...get().dragSpeed,
+          [tool]: upgrades[tool].dragSpeed
+            ? (upgrades[tool].dragSpeed.currentEffect as number)
+            : tool === "lever"
+            ? 0.1
+            : 0,
         },
       });
     },

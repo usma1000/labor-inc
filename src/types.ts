@@ -20,20 +20,6 @@ export interface UpgradeState extends UpgradeConfig {
 }
 export type ToolUpgrades = Record<string, UpgradeState>;
 
-// TODO: this needs to be merged with GameState below
-// this is the new approach to track upgrades
-// instead of tracking upgrade state for each tool separately, track it per upgrade
-
-// export interface GameState {
-//   upgrades: Record<ToolName, ToolUpgrades>;
-//   meritYield: Record<ToolName, number>;
-//   holdTime: Record<ToolName, number>;
-//   cooldownTime: Record<ToolName, number>;
-//   autoPressEnabled: Record<ToolName, boolean>;
-
-//   purchaseUpgrade: (tool: ToolName, upgradeId: string) => void;
-// }
-
 export type GameState = {
   // --- Core State ---
   wage: number;
@@ -47,6 +33,7 @@ export type GameState = {
   meritYield: Record<ToolName, number>;
   holdTime: Record<ToolName, number>;
   cooldownTime: Record<ToolName, number>;
+  dragSpeed: Record<ToolName, number>;
   autoPressEnabled: Record<ToolName, boolean>;
   purchaseUpgrade: (tool: ToolName, upgradeId: string) => void;
 

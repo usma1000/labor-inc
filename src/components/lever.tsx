@@ -3,9 +3,11 @@ import { useGameStore } from "../store";
 import StatusLight, { type StatusLightColor } from "./status-light";
 
 export default function Lever() {
-  const holdSpeed = useGameStore((state) => state.holdTime.lever);
-  const resetSpeed = useGameStore((state) => state.cooldownTime.lever * 1000); // Convert to ms
-  const wageAmount = useGameStore((state) => state.meritYield.lever);
+  const dragSpeed = useGameStore((state) => state.dragSpeed.lever);
+  const resetSpeed = useGameStore(
+    (state) => (state.cooldownTime.lever || 3) * 1000
+  ); // Convert to ms, default 3s
+  const wageAmount = useGameStore((state) => state.meritYield.lever || 1);
   const addWage = useGameStore((state) => state.addWage);
 
   // Refs
@@ -37,7 +39,7 @@ export default function Lever() {
     lastUpdateTimeRef.current = now;
 
     // Calculate max distance the handle can move this frame
-    const maxMove = holdSpeed * deltaTime;
+    const maxMove = dragSpeed * deltaTime;
 
     // Calculate distance to target
     const diff = targetXRef.current - currentXRef.current;
@@ -58,7 +60,7 @@ export default function Lever() {
     if (isDraggingRef.current) {
       animationFrameRef.current = requestAnimationFrame(updateHandlePosition);
     }
-  }, [holdSpeed, MAX_X]);
+  }, [dragSpeed, MAX_X]);
 
   const startResetAnimation = useCallback(() => {
     isDraggingRef.current = false;
@@ -69,7 +71,10 @@ export default function Lever() {
     setLightColor("yellow");
 
     if (handleRef.current) {
-      handleRef.current.style.transition = `transform ${resetSpeed}ms ease-in-out`;
+      // Ensure transition style is set before transform
+      handleRef.current.style.transition = `transform ${resetSpeed}ms cubic-bezier(0.4, 0.0, 0.2, 1)`;
+      // Force a reflow to ensure the transition property is applied
+      handleRef.current.offsetHeight;
       handleRef.current.style.transform = "translateX(0px)";
       currentXRef.current = 0;
       targetXRef.current = 0;
@@ -149,8 +154,8 @@ export default function Lever() {
     document.removeEventListener("pointermove", handlePointerMove);
     document.removeEventListener("pointerup", handlePointerUp);
 
-    // Award merits if handle is near right end
-    if (currentXRef.current >= MAX_X * 0.95) {
+    // Award merits if handle is near right end and not in cooldown
+    if (currentXRef.current >= MAX_X * 0.95 && !isInCooldown) {
       addWage(wageAmount);
       // Play full lever sound
       if (leverFullSoundRef.current) {
@@ -162,7 +167,14 @@ export default function Lever() {
     }
 
     startResetAnimation();
-  }, [addWage, wageAmount, handlePointerMove, startResetAnimation, MAX_X]);
+  }, [
+    addWage,
+    wageAmount,
+    handlePointerMove,
+    startResetAnimation,
+    MAX_X,
+    isInCooldown,
+  ]);
 
   return (
     <div className="flex flex-col items-center">
