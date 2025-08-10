@@ -246,6 +246,12 @@ export const useGameStore = create<GameState>((set, get) => {
         set({ leverUnlocked: true });
       });
 
+      triggerMilestone("wage_500", wage >= 500, () => {
+        logMessage(
+          "Congratulations, Associate. You have successfully accrued 500 Merits™. Remember: wealth is meaningless until it is reinvested into the Company. Your loyalty compounds faster than your earnings."
+        );
+      });
+
       triggerMilestone(
         "wage_idle",
         lastWageEarned !== null &&
