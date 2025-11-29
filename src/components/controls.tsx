@@ -1,6 +1,7 @@
 import { useGameStore } from "../store";
 import Button from "./button";
 import Lever from "./lever";
+import Knob from "./knob";
 
 export default function Controls() {
   const leverUnlocked = useGameStore((state) => state.leverUnlocked);
@@ -16,11 +17,17 @@ export default function Controls() {
             </div>
           </div>
         </div>
-        <div className="panel relative flex-1">
-          {/* knob will go here */}
-          <div className="absolute inset-x-0 top-0 bottom-0 warning-stripes">
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-0.5">
-              <div className="sticker">Knob</div>
+        <div className="panel relative flex-1 overflow-hidden">
+          <Knob />
+          <div
+            className={`absolute inset-0 bg-beige transition-transform duration-500 ${
+              leverUnlocked ? "-translate-y-full" : ""
+            }`}
+          >
+            <div className="absolute inset-0 z-10 warning-stripes">
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-0.5">
+                <div className="sticker">Knob</div>
+              </div>
             </div>
           </div>
         </div>
