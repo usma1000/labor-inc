@@ -1,16 +1,32 @@
-import { useRef, useCallback, useEffect } from "react";
+import { useRef, useCallback, useEffect, useState } from "react";
+import { useGameStore } from "../store";
+import StatusLight, { type StatusLightColor } from "./status-light";
 
 /**
  * Knob component with mid-century modern aesthetic
- * Supports rotation via pointer drag
+ * Supports rotation via pointer drag with snap-to-tick functionality
  */
 export default function Knob() {
   const knobRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
   const startAngleRef = useRef(0);
   const currentRotationRef = useRef(0);
+  const previousRotationRef = useRef(0);
+  const lastUpdateTimeRef = useRef(0);
+
+  const [lightColor, setLightColor] = useState<StatusLightColor>("inactive");
+  const [activeTickIndex, setActiveTickIndex] = useState<number>(0);
+  const [isCorrectlyPositioned, setIsCorrectlyPositioned] = useState(false);
+
+  const addWage = useGameStore((state) => state.addWage);
+  const meritYield = useGameStore((state) => state.meritYield.dial || 1);
 
   const KNOB_SIZE = 120;
+  const TICK_COUNT = 8;
+  const TICK_ANGLE_STEP = 360 / TICK_COUNT;
+  const MAX_ROTATION_SPEED = 0.1; // degrees per millisecond (slower, more controlled)
+  const SNAP_THRESHOLD = TICK_ANGLE_STEP / 2; // Half a tick step for snapping detection
+  const ACTIVE_TICK_INTERVAL = 10000; // 5 seconds
 
   /**
    * Calculates angle from center point to mouse/touch position
@@ -36,6 +52,12 @@ export default function Knob() {
       if (!knobRef.current) return;
 
       isDraggingRef.current = true;
+      lastUpdateTimeRef.current = performance.now();
+      previousRotationRef.current = currentRotationRef.current;
+
+      // Remove any transition for smooth dragging
+      knobRef.current.style.transition = "";
+
       const currentAngle = getAngle(e.clientX, e.clientY);
       startAngleRef.current = currentAngle - currentRotationRef.current;
 
@@ -46,34 +68,125 @@ export default function Knob() {
   );
 
   /**
-   * Handles pointer move event to update rotation
+   * Snaps rotation to nearest tick mark and returns the tick index
+   */
+  const snapToNearestTick = useCallback(
+    (rotation: number): { angle: number; tickIndex: number } => {
+      const normalizedRotation = ((rotation % 360) + 360) % 360;
+      const tickIndex =
+        Math.round(normalizedRotation / TICK_ANGLE_STEP) % TICK_COUNT;
+      const angle = (tickIndex * TICK_ANGLE_STEP) % 360;
+      return { angle, tickIndex };
+    },
+    []
+  );
+
+  /**
+   * Checks if current rotation is within snapping distance of a target tick
+   */
+  const isNearTick = useCallback(
+    (rotation: number, targetTickIndex: number): boolean => {
+      const targetAngle = (targetTickIndex * TICK_ANGLE_STEP) % 360;
+      const normalizedRotation = ((rotation % 360) + 360) % 360;
+      let diff = Math.abs(normalizedRotation - targetAngle);
+      if (diff > 180) {
+        diff = 360 - diff;
+      }
+      return diff <= SNAP_THRESHOLD;
+    },
+    []
+  );
+
+  /**
+   * Handles pointer move event to update rotation with speed limiting
    */
   const handlePointerMove = useCallback(
     (e: PointerEvent) => {
       if (!isDraggingRef.current || !knobRef.current) return;
 
+      const now = performance.now();
+      const deltaTime = now - lastUpdateTimeRef.current;
+      lastUpdateTimeRef.current = now;
+
       const currentAngle = getAngle(e.clientX, e.clientY);
-      let newRotation = currentAngle - startAngleRef.current;
+      let targetRotation = currentAngle - startAngleRef.current;
 
       // Normalize rotation to 0-360 range
-      newRotation = ((newRotation % 360) + 360) % 360;
+      targetRotation = ((targetRotation % 360) + 360) % 360;
+
+      // Cap rotation speed
+      const previousRotation = currentRotationRef.current;
+      let rotationDelta = targetRotation - previousRotation;
+
+      // Handle wrap-around (e.g., going from 350° to 10°)
+      if (rotationDelta > 180) {
+        rotationDelta -= 360;
+      } else if (rotationDelta < -180) {
+        rotationDelta += 360;
+      }
+
+      // Limit rotation speed
+      const maxDelta = MAX_ROTATION_SPEED * deltaTime;
+      const limitedDelta = Math.max(
+        -maxDelta,
+        Math.min(maxDelta, rotationDelta)
+      );
+      const newRotation = (previousRotation + limitedDelta + 360) % 360;
 
       currentRotationRef.current = newRotation;
       knobRef.current.style.transform = `rotate(${newRotation}deg)`;
+
+      // Check if near active tick while dragging (yellow light)
+      if (isNearTick(newRotation, activeTickIndex)) {
+        setLightColor("yellow");
+      } else {
+        setLightColor("inactive");
+      }
     },
-    [getAngle]
+    [getAngle, isNearTick, activeTickIndex]
   );
 
   /**
-   * Handles pointer up event to end rotation
+   * Handles pointer up event to end rotation and snap to nearest tick
    */
-  const handlePointerUp = useCallback((e: PointerEvent) => {
-    if (!knobRef.current) return;
+  const handlePointerUp = useCallback(
+    (e: PointerEvent) => {
+      if (!knobRef.current) return;
 
-    isDraggingRef.current = false;
-    knobRef.current.releasePointerCapture(e.pointerId);
-    knobRef.current.style.cursor = "grab";
-  }, []);
+      isDraggingRef.current = false;
+      knobRef.current.releasePointerCapture(e.pointerId);
+      knobRef.current.style.cursor = "grab";
+
+      // Snap to nearest tick mark
+      const { angle: snappedRotation, tickIndex } = snapToNearestTick(
+        currentRotationRef.current
+      );
+      currentRotationRef.current = snappedRotation;
+
+      // Check if snapped to correct active tick
+      const isCorrect = tickIndex === activeTickIndex;
+      setIsCorrectlyPositioned(isCorrect);
+
+      if (isCorrect) {
+        setLightColor("green");
+      } else {
+        setLightColor("inactive");
+      }
+
+      // Animate to snapped position
+      knobRef.current.style.transition =
+        "transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1)";
+      knobRef.current.style.transform = `rotate(${snappedRotation}deg)`;
+
+      // Remove transition after animation completes
+      setTimeout(() => {
+        if (knobRef.current) {
+          knobRef.current.style.transition = "";
+        }
+      }, 200);
+    },
+    [snapToNearestTick, activeTickIndex]
+  );
 
   // Set up pointer event listeners
   useEffect(() => {
@@ -86,8 +199,36 @@ export default function Knob() {
     };
   }, [handlePointerMove, handlePointerUp]);
 
-  const TICK_COUNT = 8;
-  const TICK_ANGLE_STEP = 360 / TICK_COUNT;
+  // Change active tick every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newActiveTick = Math.floor(Math.random() * TICK_COUNT);
+      setActiveTickIndex(newActiveTick);
+
+      // Check if already at the new active tick
+      const { tickIndex } = snapToNearestTick(currentRotationRef.current);
+      if (tickIndex === newActiveTick) {
+        setIsCorrectlyPositioned(true);
+        setLightColor("green");
+      } else {
+        setIsCorrectlyPositioned(false);
+        setLightColor("inactive");
+      }
+    }, ACTIVE_TICK_INTERVAL);
+
+    return () => clearInterval(interval);
+  }, [snapToNearestTick]);
+
+  // Earn merits while correctly positioned (green light)
+  useEffect(() => {
+    if (!isCorrectlyPositioned || lightColor !== "green") return;
+
+    const meritInterval = setInterval(() => {
+      addWage(meritYield);
+    }, 1000); // 1 merit per second
+
+    return () => clearInterval(meritInterval);
+  }, [isCorrectlyPositioned, lightColor, addWage, meritYield]);
 
   return (
     <div className="flex flex-col items-center justify-center p-6 select-none">
@@ -146,7 +287,19 @@ export default function Knob() {
                 0 2px 4px rgba(55, 54, 51, 0.15)
               `,
             }}
-          />
+          >
+            {/* Status light in center */}
+            <div
+              className="absolute"
+              style={{
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <StatusLight color={lightColor} size={12} />
+            </div>
+          </div>
 
           {/* Subtle highlight on top - fixed */}
           <div
